@@ -40,7 +40,7 @@
         packages = {
           default = ags.lib.bundle {
             inherit pkgs;
-            src = ./.;
+            src = ./src;
             name = "zeide-shell";
             entry = "app.ts";
             gtk4 = true;
@@ -51,15 +51,19 @@
 
         devShells = {
           default = pkgs.mkShell {
-            nativeBuildInputs = with pkgs; [
-              nodejs
-            ];
+            nativeBuildInputs = with pkgs; [nodejs];
 
             buildInputs = [
               (ags.packages.${system}.default.override {
                 extraPackages = astalLibraries;
               })
             ];
+
+            shellHook = ''
+              if [ ! -d "@girs" ]; then
+                ${pkgs.lib.getExe ags.packages.${system}.default} types -d .
+              fi
+            '';
           };
         };
       }
