@@ -1,0 +1,1 @@
+# Zeide's shell configuration

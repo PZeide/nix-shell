@@ -1,0 +1,42 @@
+
+Todo:
+  Features:
+    ☐ FEAT - Control Center
+      ☐ Advanced audio visualizer and controls
+      ☐ Input & output switcher + volume changer
+      ☐ Audio mixer
+      ☐ RFKill (Airplane Mode)
+      ☐ WiFi
+      ☐ Bluetooth
+      ☐ Brightness
+      ☐ Color Picker
+      ☐ Screenshot
+    ☐ FEAT - Notifications
+      ☐ Notification center
+      ☐ Popup
+    ☐ FEAT - OSD
+      ☐ Input / output volume + mute
+      ☐ Brightness
+    ☐ FEAT - App Launcher
+
+  Bugs:
+
+
+  Updates:
+
+
+In Progress:
+  ☐ FEAT - Top bar basic implementation
+    ☐ Simple audio visualizer
+    ☐ Focused window title
+    ☐ Hyprland workspaces
+    ☐ Battery indicator
+    ☐ Time
+    ☐ Tray
+    ☐ Power menu
+
+Cancelled:
+
+
+Archive:
+
