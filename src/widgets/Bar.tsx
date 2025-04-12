@@ -1,10 +1,10 @@
-import { App, Astal, Gtk, Gdk } from "astal/gtk4"
-import { Variable } from "astal"
+import { Variable } from "astal";
+import { App, Astal, Gdk, Gtk } from "astal/gtk4";
 
-const time = Variable("").poll(1000, "date")
+const time = Variable("").poll(1000, "date");
 
 export default function Bar(gdkmonitor: Gdk.Monitor) {
-  const { TOP, LEFT, RIGHT } = Astal.WindowAnchor
+  const { TOP, LEFT, RIGHT } = Astal.WindowAnchor;
 
   return (
     <window
@@ -28,5 +28,5 @@ export default function Bar(gdkmonitor: Gdk.Monitor) {
         </menubutton>
       </centerbox>
     </window>
-  )
+  );
 }
