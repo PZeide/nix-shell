@@ -1,12 +1,14 @@
 import { App } from "astal/gtk4";
 import { initStyle, styleDep } from "./lib/style";
+import { syncWithMonitors } from "./lib/utils";
 import options from "./options";
 import { handleRequest } from "./request";
+import Bar from "./widgets/bar/Bar";
 
-import { syncWithMonitors } from "./lib/utils";
 import style from "./styles/main.scss";
-import Bar from "./widgets/Bar";
-const styleDependencies = [styleDep(options.theme.primary, "theme-primary")];
+const styleDependencies = [
+  styleDep(options.theme.bgColor, "zs-theme-bg-color"),
+];
 
 async function startShell() {
   console.debug("Starting shell!");
@@ -18,7 +20,7 @@ async function startShell() {
 App.start({
   instanceName: "zeide-shell",
   main() {
-    startShell().catch((e) => `Failed to start shell: ${e}.`);
+    startShell().catch((e) => `Failed to start shell: ${e.message}.`);
   },
   requestHandler(request, res) {
     handleRequest(request)

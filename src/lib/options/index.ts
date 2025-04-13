@@ -6,8 +6,6 @@ import { Option, OptionType } from "./option";
 import { syncTreeFromFile, syncTreeToFile } from "./sync";
 import { OptionTree, subscribeToTree } from "./tree";
 
-export * from "./refinements";
-
 export function opt<T extends OptionType>(init: T, schema: z.ZodType<T>) {
   return new Option(init, schema);
 }
@@ -19,26 +17,32 @@ export async function defineOptions<T extends OptionTree>(
   await syncTreeFromFile(tree, path);
 
   const debouncedSyncTreeToFile = debounce(syncTreeToFile, 150);
-  subscribeToTree(tree, async (leaf) => {
+  subscribeToTree(tree, (leaf) => {
     if (leaf.changeSource === "tree-sync") {
       // Ignore changes from tree sync
       return;
     }
 
-    // TODO DEBUG
-    const p = await debouncedSyncTreeToFile(tree, path);
-    console.info(p);
+    debouncedSyncTreeToFile(tree, path)
+      .then((d) => console.log(d))
+      .catch((e) =>
+        console.error(`Failed to sync option tree to file: ${e.message}.`),
+      );
   });
 
-  monitorFile(path, async (_, event) => {
+  monitorFile(path, (_, event) => {
     if (
       event == Gio.FileMonitorEvent.CREATED ||
       event == Gio.FileMonitorEvent.CHANGED
     ) {
-      await syncTreeFromFile(tree, path);
+      syncTreeFromFile(tree, path)
+        .then(() => console.info("Successfully synced option tree from file."))
+        .catch((e) =>
+          console.error(`Failed to sync option tree from file: ${e.message}.`),
+        );
     }
   });
 
-  console.info(`OptionTree defined with file ${path}.`);
+  console.info(`Option tree defined with file ${path}.`);
   return tree as ReadonlyDeep<T>;
 }

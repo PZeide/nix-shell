@@ -55,7 +55,7 @@ function traverseAndSync(
         throw Error(`Unexcepted value at ${objectPath}, excepted an object`);
       }
 
-      traverseAndSync(treeTarget, objectTarget as JsonObject, `${objectPath}.`);
+      traverseAndSync(treeTarget, objectTarget as JsonObject, `${key}.`);
     }
   }
 }
@@ -67,7 +67,7 @@ export async function syncTreeFromFile(tree: OptionTree, path: string) {
   } catch (e) {
     if (isGLibError(e, Gio.IOErrorEnum, Gio.IOErrorEnum.NOT_FOUND)) {
       // File doesn't exists, ignore sync
-      console.debug("File is missing, OptionTree is unchanged.");
+      console.debug("File is missing, option tree is unchanged.");
       return;
     }
 
