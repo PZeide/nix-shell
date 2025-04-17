@@ -3,7 +3,11 @@ import { initStyle, styleDep } from "./lib/style";
 import { syncWithMonitors } from "./lib/utils";
 import options from "./options";
 import { handleRequest } from "./request";
-import Bar from "./widgets/bar/Bar";
+import { BarBuilder } from "./widgets/bar/Bar";
+import {
+  BarCornerLeftBuilder,
+  BarCornerRightBuilder,
+} from "./widgets/bar/BarCorner";
 
 import style from "./styles/main.scss";
 const styleDependencies = [
@@ -14,7 +18,7 @@ async function startShell() {
   console.debug("Starting shell!");
 
   await initStyle(style, styleDependencies);
-  syncWithMonitors([Bar]);
+  syncWithMonitors([BarBuilder, BarCornerLeftBuilder, BarCornerRightBuilder]);
 }
 
 App.start({

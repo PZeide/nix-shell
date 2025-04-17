@@ -1,11 +1,15 @@
 @use "../../common/colors";
 
 window.bar {
-  background: colors.$bg-color;
-  //color: transparent;
+  background-color: colors.$bg-color;
   font-weight: bold;
 
   > .bar-inner {
     margin: 8px;
   }
+}
+
+window.bar-corner {
+  background-color: transparent;
+  color: colors.$bg-color;
 }
