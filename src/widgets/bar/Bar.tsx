@@ -1,9 +1,11 @@
 import { bind } from "astal";
 import { App, Astal, Gdk } from "astal/gtk4";
 import options from "../../options";
+import Clock from "./modules/Clock";
 import HyprlandWorkspaces from "./modules/HyprlandWorkspace";
 import LauncherButton from "./modules/LauncherButton";
 import ModuleSeparator from "./modules/ModuleSeparator";
+import NotificationIndicator from "./modules/NotificationIndicator";
 
 type BarProps = {
   monitor: Gdk.Monitor;
@@ -48,7 +50,9 @@ export default function Bar(props: BarProps) {
             cssClasses={["bar-module-container", "bar-center-modules"]}
             spacing={bind(options.bar.moduleSpacing)}
           >
-            CENTER
+            <Clock />
+            <ModuleSeparator />
+            <NotificationIndicator />
           </box>
         }
         endWidget={

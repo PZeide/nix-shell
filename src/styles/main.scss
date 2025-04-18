@@ -1,5 +1,6 @@
 @use "common/base";
 
 @use "widgets/bar/bar";
-@use "widgets/bar/modules/separator";
+@use "widgets/bar/modules/clock";
 @use "widgets/bar/modules/hyprland-workspaces";
+@use "widgets/bar/modules/separator";

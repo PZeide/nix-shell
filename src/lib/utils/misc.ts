@@ -1,4 +1,12 @@
-import { GLib } from "astal";
+import { execAsync, GLib, Variable } from "astal";
+
+export const now = Variable(GLib.DateTime.new_now_local()).poll(1000, () =>
+  GLib.DateTime.new_now_local(),
+);
+
+export async function sh(cmd: string): Promise<string> {
+  return await execAsync(["/bin/sh", "-c", cmd]);
+}
 
 export function debounce<T extends unknown[], U>(
   callback: (...args: T) => PromiseLike<U> | U,
@@ -11,13 +19,4 @@ export function debounce<T extends unknown[], U>(
       source = setTimeout(() => resolve(callback(...args)), wait);
     });
   };
-}
-
-function groupBy<T>(arr: T[], fn: (item: T) => any) {
-  return arr.reduce<Record<string, T[]>>((prev, curr) => {
-    const groupKey = fn(curr);
-    const group = prev[groupKey] || [];
-    group.push(curr);
-    return { ...prev, [groupKey]: group };
-  }, {});
 }

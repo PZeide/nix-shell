@@ -11,5 +11,8 @@ window.bar {
 
 window.bar-corner {
   background-color: transparent;
-  color: theme.$bg-color;
+
+  > * {
+    color: theme.$bg-color;
+  }
 }

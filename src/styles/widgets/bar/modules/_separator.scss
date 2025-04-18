@@ -1,7 +1,8 @@
+@use "sass:color";
 @use "~theme" as theme;
 
 window.bar .module-separator {
-  background-color: theme.$fg-color;
+  background-color: color.scale($color: theme.$fg-color, $alpha: -60%);
   min-width: 0.5pt;
   margin: 2pt 2pt;
 }

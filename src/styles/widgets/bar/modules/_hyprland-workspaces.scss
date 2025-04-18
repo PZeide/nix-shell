@@ -7,7 +7,7 @@ window.bar .module-hyprland-workspaces {
 
     min-width: 5pt;
     min-height: 5pt;
-    border-radius: 4pt;
+    border-radius: 6pt;
     margin: 0 2pt;
     background-color: color.scale($color: theme.$fg-color, $alpha: -70%);
 
@@ -24,7 +24,7 @@ window.bar .module-hyprland-workspaces {
     &.focused {
       background-color: theme.$bar-hyprland-workspaces-focused-color;
       min-width: 20pt;
-      min-height: 12pt;
+      min-height: 9pt;
     }
   }
 }

@@ -1,6 +1,7 @@
-import { bind, execAsync, Variable } from "astal";
+import { bind, Variable } from "astal";
 import { Gdk, Gtk } from "astal/gtk4";
 import Hyprland from "gi://AstalHyprland";
+import { sh } from "../../../lib/utils";
 import { toHyprlandMonitor } from "../../../lib/utils/hyprland";
 import options from "../../../options";
 
@@ -54,9 +55,11 @@ export default function HyprlandWorkspaces(props: HyprlandWorkspacesProps) {
       return;
     }
 
-    execAsync(action).catch((e) =>
-      console.error(`Failed to execute hyprland workspaces action: ${e}.`),
-    );
+    sh(action)
+      .then((r) => console.info(`Executed hyprland workspaces action: ${r}.`))
+      .catch((e) =>
+        console.error(`Failed to execute hyprland workspaces action: ${e}.`),
+      );
   };
 
   const onScroll = (self: Gtk.Box, dx: number, dy: number) => {

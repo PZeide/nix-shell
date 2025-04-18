@@ -11,6 +11,7 @@ export default [
   styleDep(options.theme.bgColor, "bg-color"),
   styleDep(options.theme.fgColor, "fg-color"),
   styleDep(options.theme.primaryColor, "primary-color"),
+  styleDep(options.theme.displayFont, "display-font"),
   /* widgets/bar/modules/HyprlandWorkspaces */
   styleDep(
     options.bar.hyprlandWorkspaces.focusedWorkspaceColor,
