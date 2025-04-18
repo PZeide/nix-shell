@@ -1,0 +1,7 @@
+@use "../../../common/colors";
+
+window.bar .module-separator {
+  background-color: colors.$bg-color;
+  min-width: 0.5pt;
+  margin: 2pt 2pt;
+}

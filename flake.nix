@@ -51,7 +51,10 @@
 
         devShells = {
           default = pkgs.mkShell {
-            nativeBuildInputs = with pkgs; [nodejs];
+            nativeBuildInputs = with pkgs; [
+              nodejs
+              icon-library
+            ];
 
             buildInputs = [
               (ags.packages.${system}.default.override {

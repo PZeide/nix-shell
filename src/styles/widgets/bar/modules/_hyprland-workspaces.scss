@@ -1,0 +1,25 @@
+@use "../../../common/colors";
+
+window.bar .module-hyprland-workspaces {
+  .workspace-button {
+    font-size: 0;
+    min-width: 5pt;
+    min-height: 5pt;
+    border-radius: 6px;
+    margin: 0 3px;
+    transition: 200ms;
+    background-color: /*transparentize($color: colors.$fg-color, $amount: 0.7)*/ red;
+
+    &.occupied {
+      background-color: blue;
+      min-width: 6.5pt;
+      min-height: 6.5pt;
+    }
+
+    &.focused {
+      background-color: red;
+      min-width: 20pt;
+      min-height: 12pt;
+    }
+  }
+}

@@ -1,6 +1,9 @@
 import { bind } from "astal";
 import { App, Astal, Gdk } from "astal/gtk4";
 import options from "../../options";
+import HyprlandWorkspaces from "./modules/HyprlandWorkspace";
+import LauncherButton from "./modules/LauncherButton";
+import ModuleSeparator from "./modules/ModuleSeparator";
 
 type BarProps = {
   monitor: Gdk.Monitor;
@@ -12,7 +15,7 @@ export default function Bar(props: BarProps) {
   return (
     <window
       name="Bar"
-      visible
+      visible={bind(options.bar.isEnabled)}
       cssClasses={["bar"]}
       gdkmonitor={props.monitor}
       layer={Astal.Layer.TOP}
@@ -30,9 +33,32 @@ export default function Bar(props: BarProps) {
       <centerbox
         hexpand
         cssClasses={["bar-inner"]}
-        startWidget={<box cssClasses={["bar-left-modules"]}>LEFT</box>}
-        centerWidget={<box cssClasses={["bar-center-modules"]}>CENTER</box>}
-        endWidget={<box cssClasses={["bar-right-modules"]}>RIGHT</box>}
+        startWidget={
+          <box
+            cssClasses={["bar-module-container", "bar-left-modules"]}
+            spacing={bind(options.bar.moduleSpacing)}
+          >
+            <LauncherButton />
+            <ModuleSeparator />
+            <HyprlandWorkspaces monitor={props.monitor} />
+          </box>
+        }
+        centerWidget={
+          <box
+            cssClasses={["bar-module-container", "bar-center-modules"]}
+            spacing={bind(options.bar.moduleSpacing)}
+          >
+            CENTER
+          </box>
+        }
+        endWidget={
+          <box
+            cssClasses={["bar-module-container", "bar-right-modules"]}
+            spacing={bind(options.bar.moduleSpacing)}
+          >
+            RIGHT
+          </box>
+        }
       />
     </window>
   );
