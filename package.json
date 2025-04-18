@@ -2,7 +2,7 @@
   "name": "astal-shell",
   "scripts": {
     "dev": "nodemon --watch './src' --ext 'ts,tsx,scss'",
-    "start": "cross-env DEBUG=true ags run --gtk4 ./src",
+    "start": "cross-env G_MESSAGES_DEBUG=all ags run --gtk4 ./src",
     "inspect": "ags inspect --instance zeide-shell",
     "format": "prettier --write ./src",
     "lint": "eslint ./src"

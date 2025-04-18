@@ -22,30 +22,32 @@
       system: let
         pkgs = nixpkgs.legacyPackages.${system};
 
-        astalLibraries = with ags.packages.${system}; [
-          io
-          astal4
-          apps
-          battery
-          bluetooth
-          hyprland
-          mpris
-          network
-          notifd
-          powerprofiles
-          tray
-          wireplumber
-        ];
+        extraPackages =
+          (with ags.packages.${system}; [
+            io
+            astal4
+            apps
+            battery
+            bluetooth
+            hyprland
+            mpris
+            network
+            notifd
+            powerprofiles
+            tray
+            wireplumber
+          ])
+          ++ (with pkgs; [
+            dart-sass
+          ]);
       in {
         packages = {
           default = ags.lib.bundle {
-            inherit pkgs;
+            inherit pkgs extraPackages;
             src = ./src;
             name = "zeide-shell";
             entry = "app.ts";
             gtk4 = true;
-
-            extraPackages = astalLibraries;
           };
         };
 
@@ -58,7 +60,7 @@
 
             buildInputs = [
               (ags.packages.${system}.default.override {
-                extraPackages = astalLibraries;
+                inherit extraPackages;
               })
             ];
 

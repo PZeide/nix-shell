@@ -1,7 +1,7 @@
-@use "../../../common/colors";
+@use "~theme" as theme;
 
 window.bar .module-separator {
-  background-color: colors.$bg-color;
+  background-color: theme.$fg-color;
   min-width: 0.5pt;
   margin: 2pt 2pt;
 }

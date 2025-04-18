@@ -19,7 +19,6 @@ export const BarCornerRightBuilder = (monitor: Gdk.Monitor) => (
 
 export default function BarCorner(props: BarCornerProps) {
   const setup = (self: Gtk.DrawingArea) => {
-    console.info("setup");
     const radius = options.bar.cornerRadius.get();
     self.set_size_request(radius, radius);
     self.set_draw_func(drawFunc);

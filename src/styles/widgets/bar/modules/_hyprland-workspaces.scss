@@ -1,23 +1,28 @@
-@use "../../../common/colors";
+@use "sass:color";
+@use "~theme" as theme;
 
 window.bar .module-hyprland-workspaces {
   .workspace-button {
-    font-size: 0;
+    transition: all 0.2s ease-out;
+
     min-width: 5pt;
     min-height: 5pt;
-    border-radius: 6px;
-    margin: 0 3px;
-    transition: 200ms;
-    background-color: /*transparentize($color: colors.$fg-color, $amount: 0.7)*/ red;
+    border-radius: 4pt;
+    margin: 0 2pt;
+    background-color: color.scale($color: theme.$fg-color, $alpha: -70%);
 
     &.occupied {
-      background-color: blue;
+      background-color: color.scale(
+        $color: theme.$bar-hyprland-workspaces-occupied-color,
+        $alpha: -40%
+      );
+
       min-width: 6.5pt;
       min-height: 6.5pt;
     }
 
     &.focused {
-      background-color: red;
+      background-color: theme.$bar-hyprland-workspaces-focused-color;
       min-width: 20pt;
       min-height: 12pt;
     }

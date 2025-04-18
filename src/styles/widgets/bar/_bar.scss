@@ -1,7 +1,7 @@
-@use "../../common/colors";
+@use "~theme" as theme;
 
 window.bar {
-  background-color: colors.$bg-color;
+  background-color: theme.$bg-color;
   font-weight: bold;
 
   > .bar-inner {
@@ -11,5 +11,5 @@ window.bar {
 
 window.bar-corner {
   background-color: transparent;
-  color: colors.$bg-color;
+  color: theme.$bg-color;
 }

@@ -33,15 +33,9 @@ function WorkspaceButton(props: WorkspaceButtonProps) {
   );
 
   const onClick = () => {
-    const action =
-      options.bar.modules.hyprlandWorkspaces.actionOnWorkspaceClick.get();
-    if (action === null) {
-      return;
+    if (options.bar.hyprlandWorkspaces.shouldFocusWorkspaceOnClick.get()) {
+      props.workspace.focus();
     }
-
-    execAsync(action).catch((error) =>
-      console.error(`Failed to execute hyprland workspace action: ${error}.`),
-    );
   };
 
   return (
@@ -55,27 +49,25 @@ function WorkspaceButton(props: WorkspaceButtonProps) {
 
 export default function HyprlandWorkspaces(props: HyprlandWorkspacesProps) {
   const onClick = () => {
-    const action = options.bar.modules.hyprlandWorkspaces.actionOnClick.get();
-    if (action === null) {
+    const action = options.bar.hyprlandWorkspaces.actionOnClick.get();
+    if (!action) {
       return;
     }
 
-    execAsync(action).catch((error) =>
-      console.error(`Failed to execute hyprland workspaces action: ${error}.`),
+    execAsync(action).catch((e) =>
+      console.error(`Failed to execute hyprland workspaces action: ${e}.`),
     );
   };
 
   const onScroll = (self: Gtk.Box, dx: number, dy: number) => {
-    if (!options.bar.modules.hyprlandWorkspaces.enableScrollGesture.get()) {
+    if (!options.bar.hyprlandWorkspaces.enableScrollGesture.get()) {
       return;
     }
 
     if (dy > 0) {
-      // MOVE TO WORKSPACE -1
-      console.log("-1");
+      hyprland.dispatch("workspace", "r-1");
     } else {
-      // MOVE TO WORKSPACE +1
-      console.log("+1");
+      hyprland.dispatch("workspace", "r+1");
     }
   };
 

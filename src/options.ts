@@ -7,21 +7,22 @@ export default await defineOptions(path, {
   theme: {
     bgColor: opt("oklch(0.22 0.0131 222.72 / 80%)", z.string()),
     fgColor: opt("oklch(0.91 0.0155 77.07)", z.string()),
+    primaryColor: opt("oklch(0.66 0.0468 20.16)", z.string()),
   },
   bar: {
     isEnabled: opt(true, z.boolean()),
     position: opt("top", z.enum(["top", "bottom"])),
     cornerRadius: opt(5, z.number()),
     moduleSpacing: opt(5, z.number()),
-    modules: {
-      launcher: {
-        useOsLogo: opt(true, z.boolean()),
-      },
-      hyprlandWorkspaces: {
-        enableScrollGesture: opt(true, z.boolean()),
-        actionOnClick: opt("", z.string().nullable()),
-        actionOnWorkspaceClick: opt(null, z.string().nullable()),
-      },
+    launcher: {
+      useOsLogo: opt(true, z.boolean()),
+    },
+    hyprlandWorkspaces: {
+      focusedWorkspaceColor: opt(null, z.string().nullable()),
+      occupiedWorkspaceColor: opt(null, z.string().nullable()),
+      enableScrollGesture: opt(true, z.boolean()),
+      actionOnClick: opt(null, z.string().nullable()),
+      shouldFocusWorkspaceOnClick: opt(false, z.boolean()),
     },
   },
 });

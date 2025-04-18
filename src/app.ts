@@ -1,32 +1,25 @@
 import { App } from "astal/gtk4";
-import { initStyle, styleDep } from "./lib/style";
+import { initStyle } from "./lib/style";
 import { syncWithMonitors } from "./lib/utils";
-import options from "./options";
 import { handleRequest } from "./request";
+import styleDependencies from "./style";
 import { BarBuilder } from "./widgets/bar/Bar";
 import {
   BarCornerLeftBuilder,
   BarCornerRightBuilder,
 } from "./widgets/bar/BarCorner";
 
-import style from "./styles/main.scss";
-const styleDependencies = [
-  styleDep(options.theme.bgColor, "zs-theme-bg-color"),
-  styleDep(options.theme.fgColor, "zs-theme-fg-color"),
-];
-
 async function startShell() {
   console.debug("Starting shell!");
 
-  await initStyle(style, styleDependencies);
+  await initStyle(`${SRC}/styles/main.scss`, styleDependencies);
   syncWithMonitors([BarBuilder, BarCornerLeftBuilder, BarCornerRightBuilder]);
 }
 
 App.start({
   instanceName: "zeide-shell",
   main() {
-    console.error(SRC);
-    startShell().catch((e) => `Failed to start shell: ${e.message}.`);
+    startShell().catch((e) => console.error(`Failed to start shell: ${e}.`));
   },
   requestHandler(request, res) {
     handleRequest(request)

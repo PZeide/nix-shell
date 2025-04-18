@@ -7,15 +7,13 @@ export default function LauncherButton() {
   return (
     <button cssClasses={["module", "module-launcher-button"]}>
       <image
-        iconName={bind(options.bar.modules.launcher.useOsLogo).as(
-          (useOsLogo) => {
-            if (useOsLogo) {
-              return GLib.get_os_info("LOGO") ?? launcherIcon;
-            }
+        iconName={bind(options.bar.launcher.useOsLogo).as((useOsLogo) => {
+          if (useOsLogo) {
+            return GLib.get_os_info("LOGO") ?? launcherIcon;
+          }
 
-            return launcherIcon;
-          },
-        )}
+          return launcherIcon;
+        })}
       />
     </button>
   );

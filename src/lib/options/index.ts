@@ -23,11 +23,9 @@ export async function defineOptions<T extends OptionTree>(
       return;
     }
 
-    debouncedSyncTreeToFile(tree, path)
-      .then((d) => console.log(d))
-      .catch((e) =>
-        console.error(`Failed to sync option tree to file: ${e.message}.`),
-      );
+    debouncedSyncTreeToFile(tree, path).catch((e) =>
+      console.error(`Failed to sync option tree to file: ${e}.`),
+    );
   });
 
   monitorFile(path, (_, event) => {
@@ -38,7 +36,7 @@ export async function defineOptions<T extends OptionTree>(
       syncTreeFromFile(tree, path)
         .then(() => console.info("Successfully synced option tree from file."))
         .catch((e) =>
-          console.error(`Failed to sync option tree from file: ${e.message}.`),
+          console.error(`Failed to sync option tree from file: ${e}.`),
         );
     }
   });
