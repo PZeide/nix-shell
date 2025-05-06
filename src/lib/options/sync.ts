@@ -1,35 +1,13 @@
-import { Gio, readFileAsync, writeFileAsync } from "astal";
-import { JsonObject } from "type-fest";
-import { ensureDirectories, isGLibError } from "../utils";
-import { Option } from "./option";
-import { OptionTree } from "./tree";
-
-function jsonifyTree(tree: OptionTree): string {
-  const result: JsonObject = {};
-
-  for (const key in tree) {
-    const target = tree[key];
-    if (target instanceof Option) {
-      result[key] = target.get();
-    } else {
-      result[key] = jsonifyTree(target);
-    }
-  }
-
-  return JSON.stringify(result);
-}
-
-export async function syncTreeToFile(tree: OptionTree, path: string) {
-  const json = jsonifyTree(tree);
-  ensureDirectories(path);
-  await writeFileAsync(path, json);
-  console.info(`OptionTree has been written to ${path}.`);
-}
+import Gio from "gi://Gio?version=2.0";
+import { isGLibError } from "@/lib/utils/glib";
+import { readFileAsync } from "ags/file";
+import type { JsonObject } from "type-fest";
+import { Option, type OptionTree } from "./option";
 
 function traverseAndSync(
   tree: OptionTree,
   object: JsonObject,
-  objectPath: string = "",
+  objectPath = ""
 ) {
   for (const key in object) {
     const objectTarget = object[key];
@@ -42,13 +20,10 @@ function traverseAndSync(
 
     if (treeTarget instanceof Option) {
       try {
-        treeTarget.set(objectTarget, { source: "tree-sync" });
+        // We can safely cast to never because zod will catch any type errors
+        treeTarget.set(objectTarget as never);
       } catch (e) {
-        if (e instanceof Error) {
-          throw Error(`Failed to sync option at ${optionPath} (${e.message})`);
-        }
-
-        throw Error(`Failed to sync option at ${optionPath}`);
+        throw Error(`Failed to sync option at ${optionPath}`, { cause: e });
       }
     } else {
       if (typeof objectTarget !== "object") {
@@ -67,11 +42,11 @@ export async function syncTreeFromFile(tree: OptionTree, path: string) {
   } catch (e) {
     if (isGLibError(e, Gio.IOErrorEnum, Gio.IOErrorEnum.NOT_FOUND)) {
       // File doesn't exists, ignore sync
-      console.debug("File is missing, option tree is unchanged.");
+      console.debug(`File ${path} is missing, option tree is unchanged.`);
       return;
     }
 
-    throw e;
+    throw new Error(`Failed to read file ${path}.`, { cause: e });
   }
 
   let object: JsonObject;
@@ -83,11 +58,7 @@ export async function syncTreeFromFile(tree: OptionTree, path: string) {
 
     object = unsafe;
   } catch (e) {
-    if (e instanceof Error) {
-      throw Error(`Failed to parse options (${e.message})`);
-    } else {
-      throw Error("Failed to parse options");
-    }
+    throw Error("Failed to parse options", { cause: e });
   }
 
   traverseAndSync(tree, object);

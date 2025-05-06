@@ -1,29 +1,28 @@
-import { App } from "astal/gtk4";
-import { Option, OptionType } from "../options/option";
-import { debounce } from "../utils";
-import { compileStyle, StyleDependency } from "./builder";
+import type { Option, OptionType } from "@/lib/options/option";
+import { debounce } from "@/lib/utils/helpers";
+import app from "ags/gtk4/app";
+import { type StyleDependency, compileStyle } from "./builder";
 
 export function styleDep<T extends OptionType>(
   option: Option<T>,
   name: string,
-  fallback?: () => T,
+  fallback?: () => T
 ): StyleDependency<T> {
   return { option, name, fallback };
 }
 
 async function updateStyle(
   stylePath: string,
-  dependencies: StyleDependency<OptionType>[],
+  dependencies: StyleDependency<OptionType>[]
 ) {
   const css = await compileStyle(stylePath, dependencies);
-  App.reset_css();
-  App.apply_css(css);
-  console.info("Shell style has been updated.");
+  app.apply_css(css, true);
+  console.debug("Shell style has been updated.");
 }
 
 export async function initStyle(
   baseStyle: string,
-  dependencies: StyleDependency<OptionType>[],
+  dependencies: StyleDependency<OptionType>[]
 ) {
   await updateStyle(baseStyle, dependencies);
 
@@ -33,7 +32,7 @@ export async function initStyle(
       console.debug("Style dependency has changed.");
 
       debouncedUpdateStyle(baseStyle, dependencies).catch((e) =>
-        console.error(`Failed to update style after change: ${e}.`),
+        console.error(`Failed to update style after change: ${e}.`)
       );
     });
   }

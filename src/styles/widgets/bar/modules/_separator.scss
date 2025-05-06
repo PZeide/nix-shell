@@ -1,8 +1,12 @@
 @use "sass:color";
-@use "~theme" as theme;
+@use "@theme" as theme;
 
-window.bar .module-separator {
-  background-color: color.scale($color: theme.$fg-color, $alpha: -60%);
-  min-width: 0.5pt;
-  margin: 2pt 2pt;
+window.bar .bar-modules-container > .module-separator {
+  background-color: color.scale(
+    $color: theme.$bar-separator-color,
+    $alpha: -60%
+  );
+  min-width: #{theme.$bar-separator-width}pt;
+  margin: #{theme.$bar-separator-vertical-margin}pt
+    #{theme.$bar-separator-horizontal-margin}pt;
 }

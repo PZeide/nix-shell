@@ -1,5 +1,7 @@
-import { execAsync, GLib, writeFileAsync } from "astal";
-import { Option, OptionType } from "../options/option";
+import GLib from "gi://GLib?version=2.0";
+import type { Option, OptionType } from "@/lib/options/option";
+import { writeFileAsync } from "ags/file";
+import { execAsync } from "ags/process";
 
 export type StyleDependency<T extends OptionType> = {
   option: Option<T>;
@@ -7,10 +9,10 @@ export type StyleDependency<T extends OptionType> = {
   fallback?: () => T;
 };
 
-const tempFileName = "_~theme.scss";
+const tempFileName = "_@theme.scss";
 
 function buildTempFileContent(
-  dependencies: StyleDependency<OptionType>[],
+  dependencies: StyleDependency<OptionType>[]
 ): string {
   let content = "";
   for (const dependency of dependencies) {
@@ -31,7 +33,7 @@ function buildTempFileContent(
 
 export async function compileStyle(
   stylePath: string,
-  dependencies: StyleDependency<OptionType>[],
+  dependencies: StyleDependency<OptionType>[]
 ): Promise<string> {
   const tempDir = GLib.dir_make_tmp("zs-style-XXXXXX");
 
@@ -42,6 +44,6 @@ export async function compileStyle(
     return await execAsync(["sass", stylePath, "-I", tempDir]);
   } finally {
     await execAsync(["rm", "-r", tempDir]);
-    console.debug(`Cleaned style temporary directory.`);
+    console.debug("Cleaned style temporary directory.");
   }
 }

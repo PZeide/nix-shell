@@ -1,69 +1,93 @@
-import { bind } from "astal";
-import { App, Astal, Gdk } from "astal/gtk4";
-import options from "../../options";
-import Clock from "./modules/Clock";
-import HyprlandWorkspaces from "./modules/HyprlandWorkspace";
-import LauncherButton from "./modules/LauncherButton";
-import ModuleSeparator from "./modules/ModuleSeparator";
-import NotificationIndicator from "./modules/NotificationIndicator";
+import options from "@/options";
+import { Astal, For, type Gdk } from "ags/gtk4";
+import app from "ags/gtk4/app";
+import { type State, bind } from "ags/state";
+import { ClockModuleBuilder } from "./modules/Clock";
+import { HyprlandWorkspacesModuleBuilder } from "./modules/HyprlandWorkspace";
+import { LauncherModuleBuilder } from "./modules/Launcher";
+import { MediaModuleBuilder } from "./modules/Media";
+import { SeparatorModuleBuilder } from "./modules/Separator";
+
+type BarModulesProps = {
+  monitor: Gdk.Monitor;
+  modules: State<string[]>;
+  type: string;
+};
 
 type BarProps = {
   monitor: Gdk.Monitor;
 };
 
-export const BarBuilder = (monitor: Gdk.Monitor) => <Bar monitor={monitor} />;
+type ModuleBuilder = (monitor: Gdk.Monitor) => JSX.Element;
+const moduleWidgets: Record<string, ModuleBuilder | undefined> = {
+  clock: ClockModuleBuilder,
+  "control-center": undefined,
+  "hyprland-workspaces": HyprlandWorkspacesModuleBuilder,
+  launcher: LauncherModuleBuilder,
+  media: MediaModuleBuilder,
+  "notifications-indicator": undefined,
+  power: undefined,
+  separator: SeparatorModuleBuilder,
+  "screencapture-indicator": undefined,
+  tray: undefined,
+};
+
+function BarModules({ monitor, modules, type }: BarModulesProps) {
+  const getModuleWidget = (module: string) => {
+    return moduleWidgets[module]?.(monitor);
+  };
+
+  const modulesWidgets = bind(modules).as((modules) =>
+    modules.map(getModuleWidget).filter((module) => module !== undefined)
+  );
+
+  return (
+    <box _type={type} class="bar-modules-container">
+      <For each={modulesWidgets}>{(moduleWidget) => moduleWidget}</For>
+    </box>
+  );
+}
 
 export default function Bar(props: BarProps) {
+  const anchor = bind(options.bar.position).as(
+    (position) =>
+      (position === "top"
+        ? Astal.WindowAnchor.TOP
+        : Astal.WindowAnchor.BOTTOM) |
+      Astal.WindowAnchor.RIGHT |
+      Astal.WindowAnchor.LEFT
+  );
+
   return (
     <window
       name="Bar"
-      visible={bind(options.bar.isEnabled)}
-      cssClasses={["bar"]}
+      visible={true}
+      class="bar"
       gdkmonitor={props.monitor}
       layer={Astal.Layer.TOP}
       exclusivity={Astal.Exclusivity.EXCLUSIVE}
-      anchor={bind(options.bar.position).as(
-        (position) =>
-          (position === "top"
-            ? Astal.WindowAnchor.TOP
-            : Astal.WindowAnchor.BOTTOM) |
-          Astal.WindowAnchor.RIGHT |
-          Astal.WindowAnchor.LEFT,
-      )}
-      application={App}
+      anchor={anchor}
+      application={app}
     >
-      <centerbox
-        hexpand
-        cssClasses={["bar-inner"]}
-        startWidget={
-          <box
-            cssClasses={["bar-module-container", "bar-left-modules"]}
-            spacing={bind(options.bar.moduleSpacing)}
-          >
-            <LauncherButton />
-            <ModuleSeparator />
-            <HyprlandWorkspaces monitor={props.monitor} />
-          </box>
-        }
-        centerWidget={
-          <box
-            cssClasses={["bar-module-container", "bar-center-modules"]}
-            spacing={bind(options.bar.moduleSpacing)}
-          >
-            <Clock />
-            <ModuleSeparator />
-            <NotificationIndicator />
-          </box>
-        }
-        endWidget={
-          <box
-            cssClasses={["bar-module-container", "bar-right-modules"]}
-            spacing={bind(options.bar.moduleSpacing)}
-          >
-            RIGHT
-          </box>
-        }
-      />
+      <centerbox hexpand class="bar-inner">
+        <BarModules
+          monitor={props.monitor}
+          modules={options.bar.leftModules}
+          type="start"
+        />
+        <BarModules
+          monitor={props.monitor}
+          modules={options.bar.centerModules}
+          type="center"
+        />
+        <BarModules
+          monitor={props.monitor}
+          modules={options.bar.rightModules}
+          type="end"
+        />
+      </centerbox>
     </window>
   );
 }
+
+export const BarBuilder = (monitor: Gdk.Monitor) => <Bar monitor={monitor} />;

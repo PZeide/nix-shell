@@ -1,11 +1,17 @@
-@use "~theme" as theme;
+@use "@theme" as theme;
 
 window.bar {
   background-color: theme.$bg-color;
+  font-family: theme.$bar-font;
   font-weight: bold;
+  font-size: #{theme.$bar-font-size}pt;
 
   > .bar-inner {
     margin: 6pt;
+
+    .bar-modules-container > .module:not(:last-child) {
+      margin-right: #{theme.$bar-module-spacing}pt;
+    }
   }
 }
 

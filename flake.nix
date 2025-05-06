@@ -1,11 +1,11 @@
 {
-  description = "Zeide's shell configuration | @PZeide";
+  description = "Zeide's shell configuration (AGS v3) | @PZeide";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
     ags = {
-      url = "github:aylur/ags";
+      url = "github:aylur/ags/v3";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -21,39 +21,63 @@
     flake-utils.lib.eachSystem ["x86_64-linux" "aarch64-linux"] (
       system: let
         pkgs = nixpkgs.legacyPackages.${system};
+        pname = "zeide-shell";
+        entry = "./src/app.ts";
+
+        astalPackages = with ags.packages.${system}; [
+          io
+          astal4
+          apps
+          battery
+          bluetooth
+          hyprland
+          mpris
+          network
+          notifd
+          powerprofiles
+          tray
+          wireplumber
+        ];
 
         extraPackages =
-          (with ags.packages.${system}; [
-            io
-            astal4
-            apps
-            battery
-            bluetooth
-            hyprland
-            mpris
-            network
-            notifd
-            powerprofiles
-            tray
-            wireplumber
-          ])
+          astalPackages
           ++ (with pkgs; [
+            libadwaita
+            libsoup_3
             dart-sass
           ]);
       in {
         packages = {
-          default = ags.lib.bundle {
-            inherit pkgs extraPackages;
+          default = pkgs.stdenv.mkDerivation {
+            name = pname;
             src = ./src;
-            name = "zeide-shell";
-            entry = "app.ts";
-            gtk4 = true;
+
+            nativeBuildInputs =
+              (with pkgs; [
+                wrapGAppsHook
+                gobject-introspection
+              ])
+              ++ ags.packages.${system}.default;
+
+            buildInputs = extraPackages ++ [pkgs.gjs];
+
+            installPhase = ''
+              runHook preInstall
+
+              mkdir -p $out/bin
+              mkdir -p $out/share
+              cp -r * $out/share
+              ags bundle ${entry} $out/bin/${pname} -d "SRC='$out/share'"
+
+              runHook postInstall
+            '';
           };
         };
 
         devShells = {
           default = pkgs.mkShell {
             nativeBuildInputs = with pkgs; [
+              bun
               nodejs
               icon-library
             ];
@@ -65,9 +89,7 @@
             ];
 
             shellHook = ''
-              if [ ! -d "@girs" ]; then
-                ${pkgs.lib.getExe ags.packages.${system}.default} types -d .
-              fi
+              export BIOME_BINARY="${pkgs.biome}/bin/biome"
             '';
           };
         };

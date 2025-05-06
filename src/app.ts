@@ -1,6 +1,6 @@
-import { App } from "astal/gtk4";
+import app from "ags/gtk4/app";
 import { initStyle } from "./lib/style";
-import { syncWithMonitors } from "./lib/utils";
+import { syncWithMonitors } from "./lib/utils/glib";
 import { handleRequest } from "./request";
 import styleDependencies from "./style";
 import { BarBuilder } from "./widgets/bar/Bar";
@@ -10,13 +10,13 @@ import {
 } from "./widgets/bar/BarCorner";
 
 async function startShell() {
-  console.debug("Starting shell!");
+  console.debug("Starting zeide-shell!");
 
   await initStyle(`${SRC}/styles/main.scss`, styleDependencies);
   syncWithMonitors([BarBuilder, BarCornerLeftBuilder, BarCornerRightBuilder]);
 }
 
-App.start({
+app.start({
   instanceName: "zeide-shell",
   main() {
     startShell().catch((e) => console.error(`Failed to start shell: ${e}.`));
@@ -27,7 +27,7 @@ App.start({
       .catch(() => res("failed to handle request"));
   },
   client() {
-    console.error("instance already running!");
-    App.quit(1);
+    console.error("Instance already running!");
+    app.quit(1);
   },
 });

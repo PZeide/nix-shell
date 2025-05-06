@@ -1,10 +1,9 @@
-import { Gio, monitorFile } from "astal";
-import { ReadonlyDeep } from "type-fest";
-import { z } from "zod";
-import { debounce } from "../utils";
-import { Option, OptionType } from "./option";
-import { syncTreeFromFile, syncTreeToFile } from "./sync";
-import { OptionTree, subscribeToTree } from "./tree";
+import Gio from "gi://Gio?version=2.0";
+import { monitorFile } from "ags/file";
+import type { ReadonlyDeep } from "type-fest";
+import type z from "zod";
+import { Option, type OptionTree, type OptionType } from "./option";
+import { syncTreeFromFile } from "./sync";
 
 export function opt<T extends OptionType>(init: T, schema: z.ZodType<T>) {
   return new Option(init, schema);
@@ -12,35 +11,23 @@ export function opt<T extends OptionType>(init: T, schema: z.ZodType<T>) {
 
 export async function defineOptions<T extends OptionTree>(
   path: string,
-  tree: T,
+  tree: T
 ): Promise<ReadonlyDeep<T>> {
   await syncTreeFromFile(tree, path);
 
-  const debouncedSyncTreeToFile = debounce(syncTreeToFile, 150);
-  subscribeToTree(tree, (leaf) => {
-    if (leaf.changeSource === "tree-sync") {
-      // Ignore changes from tree sync
-      return;
-    }
-
-    debouncedSyncTreeToFile(tree, path).catch((e) =>
-      console.error(`Failed to sync option tree to file: ${e}.`),
-    );
-  });
-
   monitorFile(path, (_, event) => {
     if (
-      event == Gio.FileMonitorEvent.CREATED ||
-      event == Gio.FileMonitorEvent.CHANGED
+      event === Gio.FileMonitorEvent.CREATED ||
+      event === Gio.FileMonitorEvent.CHANGED
     ) {
       syncTreeFromFile(tree, path)
-        .then(() => console.info("Successfully synced option tree from file."))
+        .then(() => console.debug("Successfully synced option tree from file."))
         .catch((e) =>
-          console.error(`Failed to sync option tree from file: ${e}.`),
+          console.error(`Failed to sync option tree from file: ${e}.`)
         );
     }
   });
 
-  console.info(`Option tree defined with file ${path}.`);
+  console.debug(`Option tree defined with file ${path}.`);
   return tree as ReadonlyDeep<T>;
 }

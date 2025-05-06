@@ -1,39 +1,28 @@
-import { Gio, GLib } from "astal";
-import { App, Gdk, Gtk } from "astal/gtk4";
+import GLib from "gi://GLib?version=2.0";
+import type Gio from "gi://Gio?version=2.0";
+import { Gdk, Gtk } from "ags/gtk4";
+import app from "ags/gtk4/app";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// biome-ignore lint/suspicious/noExplicitAny: matches glib implementation of an error domain
 type ErrorDomain = { new (...args: any[]): GLib.Error };
-
 export function isGLibError<T extends ErrorDomain>(
   e: unknown,
   domain: ErrorDomain,
-  code: number,
+  code: number
 ): e is T {
   return e instanceof GLib.Error && e.matches(domain, code);
 }
 
-export function ensureDirectories(path: string) {
-  try {
-    Gio.File.new_for_path(path).make_directory_with_parents();
-  } catch (e) {
-    if (isGLibError(e, Gio.IOErrorEnum, Gio.IOErrorEnum.EXISTS)) {
-      return;
-    }
-
-    throw e;
-  }
-}
-
-type MonitorWidgetBuilder = (monitor: Gdk.Monitor) => Gtk.Widget;
+type MonitorWidgetBuilder = (monitor: Gdk.Monitor) => JSX.Element;
 export function syncWithMonitors(builders: MonitorWidgetBuilder[]) {
   const display = Gdk.Display.get_default();
   if (!display) {
     throw new Error("Failed to retrieve default Display!");
   }
 
-  const current = new Map<Gdk.Monitor, Gtk.Widget[]>();
+  const current = new Map<Gdk.Monitor, JSX.Element[]>();
 
-  for (const monitor of App.get_monitors()) {
+  for (const monitor of app.get_monitors()) {
     const widgets = builders.map((builder) => builder(monitor));
     current.set(monitor, widgets);
   }
@@ -50,7 +39,6 @@ export function syncWithMonitors(builders: MonitorWidgetBuilder[]) {
       if (marked.has(monitor)) {
         // Monitor has been found so it already exists
         marked.set(monitor, true);
-        continue;
       } else {
         // Monitor is not present, it is a new monitor
         const widgets = builders.map((builder) => builder(monitor));
@@ -71,4 +59,35 @@ export function syncWithMonitors(builders: MonitorWidgetBuilder[]) {
   };
 
   display.get_monitors().connect("items-changed", updateMonitors);
+}
+
+// man OS-RELEASE(5)
+export type HostInfo = {
+  id: string;
+  name: string;
+  prettyName: string;
+  variant?: string;
+  variantId?: string;
+  version?: string;
+  versionId?: string;
+  versionCodename?: string;
+  logo?: string;
+};
+
+let cachedHostInfo: HostInfo | null;
+
+export function getHostInfo(): HostInfo {
+  cachedHostInfo ??= {
+    id: GLib.get_os_info("ID") ?? "linux",
+    name: GLib.get_os_info("NAME") ?? "Linux",
+    prettyName: GLib.get_os_info("PRETTY_NAME") ?? "Linux",
+    variant: GLib.get_os_info("VARIANT") ?? undefined,
+    variantId: GLib.get_os_info("VARIANT_ID") ?? undefined,
+    version: GLib.get_os_info("VERSION") ?? undefined,
+    versionId: GLib.get_os_info("VERSION_ID") ?? undefined,
+    versionCodename: GLib.get_os_info("VERSION_CODENAME") ?? undefined,
+    logo: GLib.get_os_info("LOGO") ?? undefined,
+  };
+
+  return cachedHostInfo;
 }

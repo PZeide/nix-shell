@@ -1,11 +1,25 @@
-import { bind } from "astal";
-import { now } from "../../../lib/utils";
-import options from "../../../options";
+import { deriveTimeFormat, now } from "@/lib/utils/time";
+import options from "@/options";
+import { bind } from "ags/state";
+
+export const ClockModuleBuilder = Clock;
 
 export default function Clock() {
+  const time = deriveTimeFormat(now, options.bar.clock.format);
+  const hoverTime = deriveTimeFormat(now, options.bar.clock.hoverFormat);
+
+  const cleanup = () => {
+    time.destroy();
+    hoverTime.destroy();
+  };
+
   return (
-    <label cssClasses={["module", "module-clock"]}>
-      {bind(now).as((time) => time.format(options.bar.clock.format.get()))}
-    </label>
+    <label
+      class="module module-clock"
+      label={bind(time)}
+      hasTooltip={bind(options.bar.clock.enableHover)}
+      tooltipText={bind(hoverTime)}
+      $destroy={cleanup}
+    />
   );
 }

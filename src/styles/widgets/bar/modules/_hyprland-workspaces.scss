@@ -1,30 +1,37 @@
 @use "sass:color";
-@use "~theme" as theme;
+@use "@theme" as theme;
 
-window.bar .module-hyprland-workspaces {
+window.bar .bar-modules-container > .module-hyprland-workspaces {
   .workspace-button {
     transition: all 0.2s ease-out;
+    margin: 0 #{theme.$bar-hyprland-workspaces-workspaces-spacing}pt;
+    border-radius: #{theme.$bar-hyprland-workspaces-workspaces-radius}pt;
 
-    min-width: 5pt;
-    min-height: 5pt;
-    border-radius: 6pt;
-    margin: 0 2pt;
-    background-color: color.scale($color: theme.$fg-color, $alpha: -70%);
+    &.inactive {
+      background-color: color.scale(
+        $color: theme.$bar-hyprland-workspaces-workspaces-inactive-color,
+        $alpha: -70%
+      );
+      min-width: #{theme.$bar-hyprland-workspaces-workspaces-inactive-width}pt;
+      min-height: #{theme.$bar-hyprland-workspaces-workspaces-inactive-height}pt;
+      border-radius: #{theme.$bar-hyprland-workspaces-workspaces-inactive-radius}pt;
+    }
 
     &.occupied {
       background-color: color.scale(
-        $color: theme.$bar-hyprland-workspaces-occupied-color,
+        $color: theme.$bar-hyprland-workspaces-workspaces-occupied-color,
         $alpha: -40%
       );
-
-      min-width: 6.5pt;
-      min-height: 6.5pt;
+      min-width: #{theme.$bar-hyprland-workspaces-workspaces-occupied-width}pt;
+      min-height: #{theme.$bar-hyprland-workspaces-workspaces-occupied-height}pt;
+      border-radius: #{theme.$bar-hyprland-workspaces-workspaces-occupied-radius}pt;
     }
 
     &.focused {
-      background-color: theme.$bar-hyprland-workspaces-focused-color;
-      min-width: 20pt;
-      min-height: 9pt;
+      background-color: theme.$bar-hyprland-workspaces-workspaces-focused-color;
+      min-width: #{theme.$bar-hyprland-workspaces-workspaces-focused-width}pt;
+      min-height: #{theme.$bar-hyprland-workspaces-workspaces-focused-height}pt;
+      border-radius: #{theme.$bar-hyprland-workspaces-workspaces-focused-radius}pt;
     }
   }
 }

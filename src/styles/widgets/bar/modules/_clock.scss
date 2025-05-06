@@ -1,3 +1,5 @@
-window.bar .module-clock {
-  font-weight: bold;
+@use "@theme" as theme;
+
+window.bar .bar-modules-container > .module-clock {
+  font-size: #{theme.$bar-clock-font-size}pt;
 }
