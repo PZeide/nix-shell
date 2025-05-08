@@ -1,8 +1,6 @@
 @use "@theme" as theme;
 
 * {
-  all: unset;
-
   color: theme.$fg-color;
   font-family: theme.$font;
 }

@@ -7,6 +7,7 @@ import { HyprlandWorkspacesModuleBuilder } from "./modules/HyprlandWorkspace";
 import { LauncherModuleBuilder } from "./modules/Launcher";
 import { MediaModuleBuilder } from "./modules/Media";
 import { SeparatorModuleBuilder } from "./modules/Separator";
+import { TrayModuleBuilder } from "./modules/Tray";
 
 type BarModulesProps = {
   monitor: Gdk.Monitor;
@@ -29,7 +30,7 @@ const moduleWidgets: Record<string, ModuleBuilder | undefined> = {
   power: undefined,
   separator: SeparatorModuleBuilder,
   "screencapture-indicator": undefined,
-  tray: undefined,
+  tray: TrayModuleBuilder,
 };
 
 function BarModules({ monitor, modules, type }: BarModulesProps) {

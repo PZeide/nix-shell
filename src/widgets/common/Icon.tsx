@@ -3,42 +3,53 @@ import {
   type OmitGtkProps,
   propBind,
 } from "@/lib/utils/helpers";
+import { type IconType, lookupIcon } from "@/lib/utils/icons";
 import type { Gtk } from "ags/gtk4";
 import { bind, derive } from "ags/state";
-
-type IconType = "regular" | "symbolic";
 
 type IconProps = DeriveProps<
   {
     icon: string;
     type?: IconType;
     size?: number;
+    fallback?: string;
   },
   Gtk.Image,
   OmitGtkProps<
     Gtk.Image.ConstructorProps,
-    "iconName" | "iconSize" | "pixelSize"
+    | "file"
+    | "gicon"
+    | "iconName"
+    | "iconSize"
+    | "paintable"
+    | "pixelSize"
+    | "resource"
+    | "storageType"
+    | "useFallback"
   >
 >;
 
-export default function Icon({ icon, type, size, ...props }: IconProps) {
-  const iconName = derive([propBind(icon), propBind(type)], (icon, type) => {
-    if (type === "regular" && icon.endsWith("-symbolic")) {
-      return icon.substring(0, icon.length - 9);
+export default function Icon({
+  icon,
+  type,
+  size,
+  fallback,
+  ...props
+}: IconProps) {
+  const paintable = derive(
+    [propBind(icon), propBind(type), propBind(size), propBind(fallback)],
+    (icon, type, size, fallback) => {
+      return lookupIcon(icon, {
+        type,
+        size,
+        fallback,
+      });
     }
-
-    if (type === "symbolic" && !icon.endsWith("-symbolic")) {
-      return `${icon}-symbolic`;
-    }
-
-    return icon;
-  });
-
-  return (
-    <image
-      iconName={bind(iconName)}
-      pixelSize={size && propBind(size)}
-      {...props}
-    />
   );
+
+  const cleanup = () => {
+    paintable.destroy();
+  };
+
+  return <image paintable={bind(paintable)} {...props} $destroy={cleanup} />;
 }

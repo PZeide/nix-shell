@@ -110,6 +110,8 @@ const barConfig = [
       "bar-separator-vertical-margin"
     ),
   ],
+  /* Module - Tray */
+  [styleDep(options.bar.tray.spacing, "bar-tray-spacing")],
 ].flat();
 
 export default [themeConfig, barConfig].flat();

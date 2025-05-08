@@ -19,13 +19,10 @@ function WorkspaceButton({ workspace }: WorkspaceButtonProps) {
   };
 
   const setup = (self: Gtk.Box) => {
-    const legacyController = new Gtk.EventControllerLegacy();
-    legacyController.connect("event", (_, event) => {
-      if (event.get_event_type() === Gdk.EventType.BUTTON_RELEASE) {
-        onClick();
-      }
-    });
-    self.add_controller(legacyController);
+    const gestureClickController = new Gtk.GestureClick();
+    gestureClickController.set_button(Gdk.BUTTON_PRIMARY);
+    gestureClickController.connect("released", onClick);
+    self.add_controller(gestureClickController);
   };
 
   const workspaceClass = derive(
@@ -100,13 +97,10 @@ export default function HyprlandWorkspaces({
     scrollController.connect("scroll", onScroll);
     self.add_controller(scrollController);
 
-    const legacyController = new Gtk.EventControllerLegacy();
-    legacyController.connect("event", (_, event) => {
-      if (event.get_event_type() === Gdk.EventType.BUTTON_RELEASE) {
-        onClick();
-      }
-    });
-    self.add_controller(legacyController);
+    const gestureClickController = new Gtk.GestureClick();
+    gestureClickController.set_button(Gdk.BUTTON_PRIMARY);
+    gestureClickController.connect("released", onClick);
+    self.add_controller(gestureClickController);
   };
 
   const hyprlandMonitor = toHyprlandMonitor(monitor);

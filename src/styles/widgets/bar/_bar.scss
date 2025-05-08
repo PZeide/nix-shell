@@ -6,6 +6,11 @@ window.bar {
   font-weight: bold;
   font-size: #{theme.$bar-font-size}pt;
 
+  button {
+    padding: 0;
+    background-color: unset;
+  }
+
   > .bar-inner {
     margin: 6pt;
 

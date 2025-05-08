@@ -46,7 +46,7 @@ export default function Launcher() {
 
   return (
     <button class="module module-launcher-button" $clicked={onClick}>
-      <Icon icon={icon} type={iconType} />
+      <Icon icon={icon} type={iconType} fallback={launcherGenericIcon} />
     </button>
   );
 }

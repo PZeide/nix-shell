@@ -4,7 +4,7 @@ import Pango from "gi://Pango?version=1.0";
 import options from "@/options";
 import Icon from "@/widgets/common/Icon";
 import { Gdk, Gtk, With } from "ags/gtk4";
-import { type Binding, State, bind, derive } from "ags/state";
+import { type Binding, State, bind, derive, hook } from "ags/state";
 
 const mediaGenericIcon = "audio-x-generic-symbolic";
 
@@ -42,7 +42,9 @@ function MediaIcon({ entry }: MediaIconProps) {
     icon.destroy();
   };
 
-  return <Icon icon={bind(icon)} type={iconType} $destroy={cleanup} />;
+  return (
+    <Icon icon={bind(icon)} fallback={mediaGenericIcon} $destroy={cleanup} />
+  );
 }
 
 type MediaRevealerProps = {
@@ -52,9 +54,8 @@ type MediaRevealerProps = {
 
 function MediaRevealer({ player, direction }: MediaRevealerProps) {
   const revealChild = new State(false);
-  let isHovering = false;
 
-  let connectId: number | undefined;
+  let isHovering = false;
   let timeoutSource: GLib.Source | undefined;
 
   const awareRevealChild = derive(
@@ -114,13 +115,10 @@ function MediaRevealer({ player, direction }: MediaRevealerProps) {
     scrollController.connect("scroll", onScroll);
     self.add_controller(scrollController);
 
-    const legacyController = new Gtk.EventControllerLegacy();
-    legacyController.connect("event", (_, event) => {
-      if (event.get_event_type() === Gdk.EventType.BUTTON_RELEASE) {
-        onClick();
-      }
-    });
-    self.add_controller(legacyController);
+    const gestureClickController = new Gtk.GestureClick();
+    gestureClickController.set_button(Gdk.BUTTON_PRIMARY);
+    gestureClickController.connect("released", onClick);
+    self.add_controller(gestureClickController);
   };
 
   const setupRevealer = (self: Gtk.Revealer) => {
@@ -128,7 +126,7 @@ function MediaRevealer({ player, direction }: MediaRevealerProps) {
     let currentTrackId: string | undefined;
     let currentTrackTitle: string | undefined;
 
-    connectId = player.connect("notify", (player) => {
+    hook(self, player, "notify", (player) => {
       if (!options.bar.media.revealOnTrackChange.get()) {
         return;
       }
@@ -145,13 +143,13 @@ function MediaRevealer({ player, direction }: MediaRevealerProps) {
 
       revealChild.set(true);
 
-      // Clear any already active timeout
       if (timeoutSource !== undefined) {
+        // Clear any already active timeout
         clearTimeout(timeoutSource);
       }
 
-      // Initiate auto-close only if not hovering
       if (!isHovering) {
+        // Initiate auto-close only if not hovering
         timeoutSource = setTimeout(() => {
           if (!self.in_destruction()) {
             revealChild.set(false);
@@ -173,14 +171,18 @@ function MediaRevealer({ player, direction }: MediaRevealerProps) {
     }
   );
 
+  const shouldShow = derive(
+    [bind(options.bar.media.hideIfStopped), bind(player, "playbackStatus")],
+    (hideIfStopped, status) => {
+      return !hideIfStopped || status !== AstalMpris.PlaybackStatus.STOPPED;
+    }
+  );
+
   const cleanup = () => {
     revealChild.destroy();
     awareRevealChild.destroy();
     formattedLabel.destroy();
-
-    if (connectId !== undefined) {
-      player.disconnect(connectId);
-    }
+    shouldShow.destroy();
 
     if (timeoutSource !== undefined) {
       clearTimeout(timeoutSource);
@@ -191,6 +193,7 @@ function MediaRevealer({ player, direction }: MediaRevealerProps) {
     <box
       $={setupContainer}
       class={`media-container dir-${direction}`}
+      visible={bind(shouldShow)}
       $destroy={cleanup}
     >
       {direction === "left" ? (

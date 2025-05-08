@@ -35,7 +35,7 @@ export default await defineOptions(path, {
       z.array(z.enum(modulesOptions))
     ),
     centerModules: opt(["clock"], z.array(z.enum(modulesOptions))),
-    rightModules: opt(["media"], z.array(z.enum(modulesOptions))),
+    rightModules: opt(["media", "tray"], z.array(z.enum(modulesOptions))),
     clock: {
       fontSize: opt(null, z.number().nullable()),
       format: opt("%I:%M", z.string()),
@@ -73,18 +73,16 @@ export default await defineOptions(path, {
       focusClickedWorkspace: opt(false, z.boolean()),
     },
     launcher: {
-      icon: opt("host-symbolic", z.enum(["generic", "host", "host-symbolic"])),
+      icon: opt("host", z.enum(["generic", "host", "host-symbolic"])),
       launcherAction: opt(null, z.string().nullable()),
     },
     media: {
-      icon: opt(
-        "player-symbolic",
-        z.enum(["generic", "player", "player-symbolic"])
-      ),
-      playersPriority: opt([], z.array(z.string())),
+      icon: opt("player", z.enum(["generic", "player", "player-symbolic"])),
+      playersPriority: opt(["cider"], z.array(z.string())),
+      onlyPrioritized: opt(true, z.boolean()),
+      hideIfStopped: opt(true, z.boolean()),
       labelFormat: opt("%artist% - %title%", z.string()),
       labelMaxLength: opt(50, z.number()),
-      onlyPrioritized: opt(false, z.boolean()),
       enableRevealer: opt(true, z.boolean()),
       revealOnHover: opt(true, z.boolean()),
       revealOnTrackChange: opt(true, z.boolean()),
@@ -99,6 +97,12 @@ export default await defineOptions(path, {
       width: opt(0.5, z.number()),
       horizontalMargin: opt(2, z.number()),
       verticalMargin: opt(2, z.number()),
+    },
+    tray: {
+      spacing: opt(2, z.number()),
+      showTooltip: opt(true, z.boolean()),
+      leftClickAction: opt("menu", z.enum(["activate", "menu", "ignore"])),
+      rightClickAction: opt("menu", z.enum(["activate", "menu", "ignore"])),
     },
   },
 });
