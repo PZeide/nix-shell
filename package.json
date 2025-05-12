@@ -4,7 +4,7 @@
 	"type": "module",
 	"private": true,
 	"scripts": {
-		"postinstall": "bun run types",
+		"postinstall": "pnpm run types",
 		"dev": "nodemon --watch ./src --ext 'ts,tsx,scss'",
 		"start": "G_MESSAGES_DEBUG='Gjs-Console zeide-shell' ags run ./src",
 		"types": "ags types --directory . --update",
