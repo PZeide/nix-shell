@@ -18,9 +18,9 @@ const modulesOptions = [
 const path = `${GLib.get_user_config_dir()}/zeide-shell/config.json`;
 export default await defineOptions(path, {
   theme: {
-    bgColor: opt("oklch(0.22 0.0131 222.72 / 80%)", z.string()),
-    fgColor: opt("oklch(0.91 0.0155 77.07)", z.string()),
-    primaryColor: opt("oklch(0.66 0.0468 20.16)", z.string()),
+    bgColor: opt("oklch(0.22 0.0084 240.27 / 80%)", z.string()),
+    fgColor: opt("oklch(0.91 0.0125 301.27)", z.string()),
+    primaryColor: opt("oklch(0.67 0.1522 20.55)", z.string()),
     font: opt("SF Pro Text", z.string()),
   },
   bar: {
