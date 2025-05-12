@@ -1,0 +1,67 @@
+@use "sass:color";
+@use "@theme" as theme;
+
+@mixin shade($i, $max-color, $min-color) {
+  background-color: color.mix(
+    $max-color,
+    $min-color,
+    ($i / theme.$bar-battery-bar-sections-count) * 100,
+    $method: rec2020
+  );
+}
+
+@mixin level-bar-blocks($max-color, $min-color) {
+  .level-bar block {
+    @for $i from 1 through theme.$bar-battery-bar-sections-count {
+      &.filled:nth-child(#{$i}) {
+        @include shade($i, $max-color, $min-color);
+      }
+    }
+  }
+}
+
+window.bar .bar-modules-container > .module-battery {
+  .level-bar {
+    min-height: 12pt;
+
+    trough {
+      border-radius: #{theme.$bar-battery-bar-radius}pt;
+      background-color: color.scale($color: theme.$fg-color, $alpha: -85%);
+    }
+
+    block {
+      min-width: #{theme.$bar-battery-bar-sections-size}pt;
+
+      &:first-child {
+        border-radius: #{theme.$bar-battery-bar-radius}pt 0 0
+          #{theme.$bar-battery-bar-radius}pt;
+      }
+
+      &:last-child {
+        border-radius: 0 #{theme.$bar-battery-bar-radius}pt
+          #{theme.$bar-battery-bar-radius}pt 0;
+      }
+    }
+  }
+
+  &.status-normal {
+    $normal-min-color: oklch(62.7% 0.194 149.214);
+    $normal-max-color: oklch(44.8% 0.119 151.328);
+
+    @include level-bar-blocks($normal-max-color, $normal-min-color);
+  }
+
+  &.status-low {
+    $low-min-color: oklch(66.6% 0.179 58.318);
+    $low-max-color: oklch(90.5% 0.182 98.111);
+
+    @include level-bar-blocks($low-max-color, $low-min-color);
+  }
+
+  &.status-critical {
+    $critical-min-color: oklch(57.7% 0.245 27.325);
+    $critical-max-color: oklch(55.3% 0.195 38.402);
+
+    @include level-bar-blocks($critical-max-color, $critical-min-color);
+  }
+}

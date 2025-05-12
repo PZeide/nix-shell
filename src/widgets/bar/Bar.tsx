@@ -2,6 +2,7 @@ import options from "@/options";
 import { Astal, For, type Gdk } from "ags/gtk4";
 import app from "ags/gtk4/app";
 import { type State, bind } from "ags/state";
+import { BatteryModuleBuilder } from "./modules/Battery";
 import { ClockModuleBuilder } from "./modules/Clock";
 import { HyprlandWorkspacesModuleBuilder } from "./modules/HyprlandWorkspace";
 import { LauncherModuleBuilder } from "./modules/Launcher";
@@ -21,15 +22,15 @@ type BarProps = {
 
 type ModuleBuilder = (monitor: Gdk.Monitor) => JSX.Element;
 const moduleWidgets: Record<string, ModuleBuilder | undefined> = {
+  battery: BatteryModuleBuilder,
   clock: ClockModuleBuilder,
   "control-center": undefined,
   "hyprland-workspaces": HyprlandWorkspacesModuleBuilder,
   launcher: LauncherModuleBuilder,
   media: MediaModuleBuilder,
   "notifications-indicator": undefined,
-  power: undefined,
+  "power-menu": undefined,
   separator: SeparatorModuleBuilder,
-  "screencapture-indicator": undefined,
   tray: TrayModuleBuilder,
 };
 

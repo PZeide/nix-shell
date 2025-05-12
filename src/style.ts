@@ -20,6 +20,18 @@ const barConfig = [
     styleDep(options.bar.font, "bar-font", fallbackOption(options.theme.font)),
     styleDep(options.bar.fontSize, "bar-font-size"),
   ],
+  /* Module - Battery */
+  [
+    styleDep(
+      options.bar.battery.barSectionsCount,
+      "bar-battery-bar-sections-count"
+    ),
+    styleDep(
+      options.bar.battery.barSectionSize,
+      "bar-battery-bar-sections-size"
+    ),
+    styleDep(options.bar.battery.barRadius, "bar-battery-bar-radius"),
+  ],
   /* Module - Clock */
   [
     styleDep(
