@@ -44,8 +44,11 @@
           ++ (with pkgs; [
             libadwaita
             libsoup_3
-            dart-sass
           ]);
+
+        pathPackages = with pkgs; [
+          dart-sass
+        ];
       in {
         packages = {
           default = pkgs.stdenv.mkDerivation (finalAttrs: {
@@ -70,6 +73,12 @@
               hash = "sha256-SNCA/OC5VyB9dp8/OkuKKlhKEOGIFkdIw31qSibl6Qg=";
             };
 
+            preFixup = ''
+              gappsWrapperArgs+=(
+                --prefix PATH : ${pkgs.lib.makeBinPath pathPackages}
+              )
+            '';
+
             installPhase = ''
               runHook preInstall
 
@@ -91,11 +100,13 @@
               icon-library
             ];
 
-            buildInputs = [
-              (ags.packages.${system}.default.override {
-                inherit extraPackages;
-              })
-            ];
+            buildInputs =
+              [
+                (ags.packages.${system}.default.override {
+                  inherit extraPackages;
+                })
+              ]
+              ++ pathPackages;
 
             shellHook = ''
               export BIOME_BINARY="${pkgs.biome}/bin/biome"
