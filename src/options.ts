@@ -38,10 +38,11 @@ export default await defineOptions(path, {
     rightModules: opt(["media", "battery"], z.array(z.enum(modulesOptions))),
     battery: {
       style: opt("bar", z.enum(["simple", "bar"])),
-      direction: opt("right", z.enum(["left", "right"])),
-      showPercentageLabel: opt(true, z.boolean()),
-      labelColor: opt("level", z.enum(["simple", "level"])),
-      showRemainingTimeOnHover: opt(true, z.boolean()),
+      showPercentageLabel: opt(false, z.boolean()),
+      tooltip: opt(
+        "percentage",
+        z.enum(["percentage", "remaining_time", "none"])
+      ),
       barSectionsCount: opt(8, z.number().positive()),
       barSectionSize: opt(6, z.number().positive()),
       barRadius: opt(5, z.number().positive()),
@@ -51,8 +52,8 @@ export default await defineOptions(path, {
     clock: {
       fontSize: opt(null, z.number().positive().nullable()),
       format: opt("%I:%M", z.string()),
-      enableHover: opt(true, z.boolean()),
-      hoverFormat: opt("%A, %d %B %Y", z.string()),
+      enableTooltip: opt(true, z.boolean()),
+      tooltipFormat: opt("%A, %d %B %Y", z.string()),
     },
     hyprlandWorkspaces: {
       workspaces: {

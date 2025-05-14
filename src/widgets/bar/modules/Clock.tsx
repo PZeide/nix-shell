@@ -6,19 +6,19 @@ export const ClockModuleBuilder = Clock;
 
 export default function Clock() {
   const time = deriveTimeFormat(now, options.bar.clock.format);
-  const hoverTime = deriveTimeFormat(now, options.bar.clock.hoverFormat);
+  const tooltipTime = deriveTimeFormat(now, options.bar.clock.tooltipFormat);
 
   const cleanup = () => {
     time.destroy();
-    hoverTime.destroy();
+    tooltipTime.destroy();
   };
 
   return (
     <label
       class="module module-clock"
       label={bind(time)}
-      hasTooltip={bind(options.bar.clock.enableHover)}
-      tooltipText={bind(hoverTime)}
+      hasTooltip={bind(options.bar.clock.enableTooltip)}
+      tooltipText={bind(tooltipTime)}
       $destroy={cleanup}
     />
   );

@@ -1,16 +1,23 @@
 import AstalBattery from "gi://AstalBattery?version=0.1";
 import options from "@/options";
-import { Gtk } from "ags/gtk4";
+import Icon from "@/widgets/common/Icon";
+import { Gtk, With } from "ags/gtk4";
 import { bind, derive } from "ags/state";
 
 const battery = AstalBattery.get_default();
 
-function BatteryLevel() {
+function BatteryLabel() {
   const percentage = bind(battery, "percentage").as((percentage) => {
     return `${Math.floor(percentage * 100)}%`;
   });
 
-  return <label label={percentage} css="margin-right: 3pt;" />;
+  return (
+    <label
+      visible={bind(options.bar.battery.showPercentageLabel)}
+      label={percentage}
+      class="level-label"
+    />
+  );
 }
 
 function BatteryBar() {
@@ -21,16 +28,37 @@ function BatteryBar() {
     }
   );
 
+  const setupOverlay = (self: Gtk.Overlay) => {
+    // Should be cleaned automatically by Gtk?
+    const icon = (
+      <Icon
+        icon="camera-flash-symbolic"
+        visible={bind(battery, "charging")}
+        halign={Gtk.Align.CENTER}
+        size={20}
+        class="level-bar-charging-icon"
+      />
+    );
+
+    self.add_overlay(icon as Gtk.Image);
+  };
+
   return (
-    <levelbar
-      class="level-bar"
-      mode={Gtk.LevelBarMode.DISCRETE}
-      valign={Gtk.Align.CENTER}
-      minValue={0}
-      maxValue={bind(options.bar.battery.barSectionsCount)}
-      value={bind(barValue)}
-    />
+    <Gtk.Overlay valign={Gtk.Align.CENTER} $={setupOverlay}>
+      <levelbar
+        class="level-bar"
+        mode={Gtk.LevelBarMode.DISCRETE}
+        valign={Gtk.Align.CENTER}
+        minValue={0}
+        maxValue={bind(options.bar.battery.barSectionsCount)}
+        value={bind(barValue)}
+      />
+    </Gtk.Overlay>
   );
+}
+
+function BatteryIcon() {
+  return <Icon icon={bind(battery, "batteryIconName")} />;
 }
 
 export const BatteryModuleBuilder = Battery;
@@ -55,19 +83,27 @@ export default function Battery() {
     return parts.join(" and ") || "1 minute";
   };
 
-  const remainingTime = derive(
+  const tooltipText = derive(
     [
+      bind(options.bar.battery.tooltip),
+      bind(battery, "percentage"),
       bind(battery, "charging"),
       bind(battery, "timeToEmpty"),
       bind(battery, "timeToFull"),
     ],
-    (charging, timeToEmpty, timeToFull) => {
-      if (!charging && timeToEmpty !== 0) {
-        return `Time to empty: ${timeRemainingFormat(timeToEmpty)}`;
+    (tooltip, percentage, charging, timeToEmpty, timeToFull) => {
+      if (tooltip === "percentage") {
+        return `${Math.floor(percentage * 100)}%`;
       }
 
-      if (charging && timeToFull !== 0) {
-        return `Time to full: ${timeRemainingFormat(timeToFull)}`;
+      if (tooltip === "remaining_time") {
+        if (!charging && timeToEmpty !== 0) {
+          return `Time to empty: ${timeRemainingFormat(timeToEmpty)}`;
+        }
+
+        if (charging && timeToFull !== 0) {
+          return `Time to full: ${timeRemainingFormat(timeToFull)}`;
+        }
       }
 
       return "";
@@ -94,7 +130,7 @@ export default function Battery() {
   );
 
   const cleanup = () => {
-    remainingTime.destroy();
+    tooltipText.destroy();
     statusClass.destroy();
   };
 
@@ -104,12 +140,27 @@ export default function Battery() {
         (status) => `module module-battery ${status}`
       )}
       visible={bind(battery, "isPresent")}
-      hasTooltip={bind(options.bar.battery.showRemainingTimeOnHover)}
-      tooltipMarkup={bind(remainingTime)}
+      hasTooltip={bind(options.bar.battery.tooltip).as(
+        (tooltip) => tooltip !== "none"
+      )}
+      tooltipMarkup={bind(tooltipText)}
       $destroy={cleanup}
     >
-      <BatteryLevel />
-      <BatteryBar />
+      <With value={bind(options.bar.battery.style)}>
+        {(style) =>
+          style === "simple" ? (
+            <box>
+              <BatteryLabel />
+              <BatteryIcon />
+            </box>
+          ) : (
+            <box>
+              <BatteryLabel />
+              <BatteryBar />
+            </box>
+          )
+        }
+      </With>
     </box>
   );
 }

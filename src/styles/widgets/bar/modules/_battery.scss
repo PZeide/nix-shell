@@ -21,8 +21,16 @@
 }
 
 window.bar .bar-modules-container > .module-battery {
+  .level-label {
+    margin-right: 4pt;
+  }
+
+  .level-bar-charging-icon {
+    margin-top: -2.5pt;
+  }
+
   .level-bar {
-    min-height: 12pt;
+    min-height: 10pt;
 
     trough {
       border-radius: #{theme.$bar-battery-bar-radius}pt;

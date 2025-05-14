@@ -97,6 +97,7 @@
           default = pkgs.mkShell {
             nativeBuildInputs = with pkgs; [
               pnpm_10
+              nodejs_22
               icon-library
             ];
 

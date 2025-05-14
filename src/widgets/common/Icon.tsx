@@ -51,5 +51,12 @@ export default function Icon({
     paintable.destroy();
   };
 
-  return <image paintable={bind(paintable)} {...props} $destroy={cleanup} />;
+  return (
+    <image
+      paintable={bind(paintable)}
+      pixelSize={size}
+      {...props}
+      $destroy={cleanup}
+    />
+  );
 }

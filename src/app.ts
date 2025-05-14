@@ -12,6 +12,8 @@ import {
 async function startShell() {
   console.debug("Starting zeide-shell!");
 
+  app.add_icons(`${SRC}/assets/icons`);
+
   await initStyle(`${SRC}/styles/main.scss`, styleDependencies);
   syncWithMonitors([BarBuilder, BarCornerLeftBuilder, BarCornerRightBuilder]);
 }
