@@ -71,7 +71,7 @@
 
             pnpmDeps = pkgs.pnpm_10.fetchDeps {
               inherit (finalAttrs) pname src;
-              hash = "sha256-SNCA/OC5VyB9dp8/OkuKKlhKEOGIFkdIw31qSibl6Qg=";
+              hash = "sha256-Ixa/4bwlOqZIXyedty60bc+EbtVC0EgS0L2hMi8lKrk=";
             };
 
             preFixup = ''
