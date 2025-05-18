@@ -7,6 +7,7 @@ export type StyleDependency<T extends OptionType> = {
   option: Option<T>;
   name: string;
   fallback?: () => T;
+  transform?: (value: OptionType) => OptionType;
 };
 
 const tempFileName = "_@theme.scss";
@@ -16,13 +17,17 @@ function buildTempFileContent(
 ): string {
   let content = "";
   for (const dependency of dependencies) {
-    const value =
+    let value =
       dependency.option.get() ??
       (dependency.fallback ? dependency.fallback() : null);
 
     if (!value) {
       console.warn(`Missing value for style dependency ${dependency.name}.`);
       continue;
+    }
+
+    if (dependency.transform) {
+      value = dependency.transform(value);
     }
 
     content += `$${dependency.name}: ${value};\n`;

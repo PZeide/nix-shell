@@ -11,7 +11,7 @@ type IconProps = DeriveProps<
   {
     icon: string;
     type?: IconType;
-    size?: number;
+    lookupSize?: number;
     fallback?: string;
   },
   Gtk.Image,
@@ -20,9 +20,7 @@ type IconProps = DeriveProps<
     | "file"
     | "gicon"
     | "iconName"
-    | "iconSize"
     | "paintable"
-    | "pixelSize"
     | "resource"
     | "storageType"
     | "useFallback"
@@ -32,16 +30,16 @@ type IconProps = DeriveProps<
 export default function Icon({
   icon,
   type,
-  size,
+  lookupSize,
   fallback,
   ...props
 }: IconProps) {
   const paintable = derive(
-    [propBind(icon), propBind(type), propBind(size), propBind(fallback)],
-    (icon, type, size, fallback) => {
+    [propBind(icon), propBind(type), propBind(lookupSize), propBind(fallback)],
+    (icon, type, lookupSize, fallback) => {
       return lookupIcon(icon, {
         type,
-        size,
+        size: lookupSize,
         fallback,
       });
     }
@@ -51,12 +49,5 @@ export default function Icon({
     paintable.destroy();
   };
 
-  return (
-    <image
-      paintable={bind(paintable)}
-      pixelSize={size}
-      {...props}
-      $destroy={cleanup}
-    />
-  );
+  return <image paintable={bind(paintable)} $destroy={cleanup} {...props} />;
 }

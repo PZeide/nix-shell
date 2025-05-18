@@ -5,7 +5,7 @@
   background-color: color.mix(
     $max-color,
     $min-color,
-    ($i / theme.$bar-battery-bar-sections-count) * 100,
+    calc(($i / theme.$bar-battery-bar-sections-count) * 100),
     $method: rec2020
   );
 }
@@ -22,32 +22,32 @@
 
 window.bar .bar-modules-container > .module-battery {
   .level-label {
-    margin-right: 4pt;
+    margin-right: 4px;
   }
 
   .level-bar-charging-icon {
-    margin-top: -2.5pt;
+    margin-top: -3px;
   }
 
   .level-bar {
-    min-height: 10pt;
+    min-height: 13px;
 
     trough {
-      border-radius: #{theme.$bar-battery-bar-radius}pt;
+      border-radius: theme.$bar-battery-bar-radius;
       background-color: color.scale($color: theme.$fg-color, $alpha: -85%);
     }
 
     block {
-      min-width: #{theme.$bar-battery-bar-sections-size}pt;
+      min-width: theme.$bar-battery-bar-sections-size;
 
       &:first-child {
-        border-radius: #{theme.$bar-battery-bar-radius}pt 0 0
-          #{theme.$bar-battery-bar-radius}pt;
+        border-radius: theme.$bar-battery-bar-radius 0 0
+          theme.$bar-battery-bar-radius;
       }
 
       &:last-child {
-        border-radius: 0 #{theme.$bar-battery-bar-radius}pt
-          #{theme.$bar-battery-bar-radius}pt 0;
+        border-radius: 0 theme.$bar-battery-bar-radius
+          theme.$bar-battery-bar-radius 0;
       }
     }
   }

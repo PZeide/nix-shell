@@ -1,129 +1,175 @@
 import options from "options";
-import type { Option, OptionType } from "./lib/options/option";
+import type { OptionType } from "./lib/options/option";
 import { styleDep } from "./lib/style";
+import type { StyleDependency } from "./lib/style/builder";
 
-function fallbackOption<T extends OptionType>(option: Option<T>) {
-  return () => option.get();
+function toPx(value: OptionType): string {
+  return `${value}px`;
 }
 
 const themeConfig = [
-  styleDep(options.theme.bgColor, "bg-color"),
-  styleDep(options.theme.fgColor, "fg-color"),
-  styleDep(options.theme.primaryColor, "primary-color"),
-  styleDep(options.theme.font, "font"),
+  styleDep(options.theme.bgColor, { name: "bg-color" }),
+  styleDep(options.theme.fgColor, { name: "fg-color" }),
+  styleDep(options.theme.primaryColor, { name: "primary-color" }),
+  styleDep(options.theme.font, { name: "font" }),
+  styleDep(options.theme.cornerRadius, {
+    name: "corner-radius",
+    transform: toPx,
+  }),
 ];
 
 const barConfig = [
   /* General */
   [
-    styleDep(options.bar.moduleSpacing, "bar-module-spacing"),
-    styleDep(options.bar.font, "bar-font", fallbackOption(options.theme.font)),
-    styleDep(options.bar.fontSize, "bar-font-size"),
+    styleDep(options.bar.moduleSpacing, {
+      name: "bar-module-spacing",
+      transform: toPx,
+    }),
+    styleDep(options.bar.font, {
+      name: "bar-font",
+      fallback: () => options.theme.font.get(),
+    }),
+    styleDep(options.bar.fontSize, {
+      name: "bar-font-size",
+      transform: toPx,
+    }),
   ],
   /* Module - Battery */
   [
-    styleDep(
-      options.bar.battery.barSectionsCount,
-      "bar-battery-bar-sections-count"
-    ),
-    styleDep(
-      options.bar.battery.barSectionSize,
-      "bar-battery-bar-sections-size"
-    ),
-    styleDep(options.bar.battery.barRadius, "bar-battery-bar-radius"),
+    styleDep(options.bar.battery.barSectionsCount, {
+      name: "bar-battery-bar-sections-count",
+    }),
+    styleDep(options.bar.battery.barSectionSize, {
+      name: "bar-battery-bar-sections-size",
+      transform: toPx,
+    }),
+    styleDep(options.bar.battery.barRadius, {
+      name: "bar-battery-bar-radius",
+      transform: toPx,
+    }),
   ],
   /* Module - Clock */
   [
-    styleDep(
-      options.bar.clock.fontSize,
-      "bar-clock-font-size",
-      fallbackOption(options.bar.fontSize)
-    ),
+    styleDep(options.bar.clock.fontSize, {
+      name: "bar-clock-font-size",
+      fallback: () => options.bar.fontSize.get(),
+      transform: toPx,
+    }),
   ],
   /* Module - Hyprland Workspaces */
   [
-    styleDep(
-      options.bar.hyprlandWorkspaces.workspaces.spacing,
-      "bar-hyprland-workspaces-workspaces-spacing"
-    ),
-    styleDep(
-      options.bar.hyprlandWorkspaces.workspaces.radius,
-      "bar-hyprland-workspaces-workspaces-radius"
-    ),
-    styleDep(
-      options.bar.hyprlandWorkspaces.workspaces.inactive.color,
-      "bar-hyprland-workspaces-workspaces-inactive-color",
-      fallbackOption(options.theme.fgColor)
-    ),
-    styleDep(
-      options.bar.hyprlandWorkspaces.workspaces.inactive.width,
-      "bar-hyprland-workspaces-workspaces-inactive-width"
-    ),
-    styleDep(
-      options.bar.hyprlandWorkspaces.workspaces.inactive.height,
-      "bar-hyprland-workspaces-workspaces-inactive-height"
-    ),
-    styleDep(
-      options.bar.hyprlandWorkspaces.workspaces.inactive.radius,
-      "bar-hyprland-workspaces-workspaces-inactive-radius",
-      fallbackOption(options.bar.hyprlandWorkspaces.workspaces.radius)
-    ),
-    styleDep(
-      options.bar.hyprlandWorkspaces.workspaces.occupied.color,
-      "bar-hyprland-workspaces-workspaces-occupied-color",
-      fallbackOption(options.theme.primaryColor)
-    ),
-    styleDep(
-      options.bar.hyprlandWorkspaces.workspaces.occupied.width,
-      "bar-hyprland-workspaces-workspaces-occupied-width"
-    ),
-    styleDep(
-      options.bar.hyprlandWorkspaces.workspaces.occupied.height,
-      "bar-hyprland-workspaces-workspaces-occupied-height"
-    ),
-    styleDep(
-      options.bar.hyprlandWorkspaces.workspaces.occupied.radius,
-      "bar-hyprland-workspaces-workspaces-occupied-radius",
-      fallbackOption(options.bar.hyprlandWorkspaces.workspaces.radius)
-    ),
-    styleDep(
-      options.bar.hyprlandWorkspaces.workspaces.focused.color,
-      "bar-hyprland-workspaces-workspaces-focused-color",
-      fallbackOption(options.theme.primaryColor)
-    ),
-    styleDep(
-      options.bar.hyprlandWorkspaces.workspaces.focused.width,
-      "bar-hyprland-workspaces-workspaces-focused-width"
-    ),
-    styleDep(
-      options.bar.hyprlandWorkspaces.workspaces.focused.height,
-      "bar-hyprland-workspaces-workspaces-focused-height"
-    ),
-    styleDep(
-      options.bar.hyprlandWorkspaces.workspaces.focused.radius,
-      "bar-hyprland-workspaces-workspaces-focused-radius",
-      fallbackOption(options.bar.hyprlandWorkspaces.workspaces.radius)
-    ),
+    styleDep(options.bar.hyprlandWorkspaces.workspaces.spacing, {
+      name: "bar-hyprland-workspaces-workspaces-spacing",
+      transform: toPx,
+    }),
+    styleDep(options.bar.hyprlandWorkspaces.workspaces.radius, {
+      name: "bar-hyprland-workspaces-workspaces-radius",
+      transform: toPx,
+    }),
+    styleDep(options.bar.hyprlandWorkspaces.workspaces.inactive.color, {
+      name: "bar-hyprland-workspaces-workspaces-inactive-color",
+      fallback: () => options.theme.fgColor.get(),
+    }),
+    styleDep(options.bar.hyprlandWorkspaces.workspaces.inactive.width, {
+      name: "bar-hyprland-workspaces-workspaces-inactive-width",
+      transform: toPx,
+    }),
+    styleDep(options.bar.hyprlandWorkspaces.workspaces.inactive.height, {
+      name: "bar-hyprland-workspaces-workspaces-inactive-height",
+      transform: toPx,
+    }),
+    styleDep(options.bar.hyprlandWorkspaces.workspaces.inactive.radius, {
+      name: "bar-hyprland-workspaces-workspaces-inactive-radius",
+      fallback: () => options.bar.hyprlandWorkspaces.workspaces.radius.get(),
+      transform: toPx,
+    }),
+    styleDep(options.bar.hyprlandWorkspaces.workspaces.occupied.color, {
+      name: "bar-hyprland-workspaces-workspaces-occupied-color",
+      fallback: () => options.theme.primaryColor.get(),
+    }),
+    styleDep(options.bar.hyprlandWorkspaces.workspaces.occupied.width, {
+      name: "bar-hyprland-workspaces-workspaces-occupied-width",
+      transform: toPx,
+    }),
+    styleDep(options.bar.hyprlandWorkspaces.workspaces.occupied.height, {
+      name: "bar-hyprland-workspaces-workspaces-occupied-height",
+      transform: toPx,
+    }),
+    styleDep(options.bar.hyprlandWorkspaces.workspaces.occupied.radius, {
+      name: "bar-hyprland-workspaces-workspaces-occupied-radius",
+      fallback: () => options.bar.hyprlandWorkspaces.workspaces.radius.get(),
+      transform: toPx,
+    }),
+    styleDep(options.bar.hyprlandWorkspaces.workspaces.focused.color, {
+      name: "bar-hyprland-workspaces-workspaces-focused-color",
+      fallback: () => options.theme.primaryColor.get(),
+    }),
+    styleDep(options.bar.hyprlandWorkspaces.workspaces.focused.width, {
+      name: "bar-hyprland-workspaces-workspaces-focused-width",
+      transform: toPx,
+    }),
+    styleDep(options.bar.hyprlandWorkspaces.workspaces.focused.height, {
+      name: "bar-hyprland-workspaces-workspaces-focused-height",
+      transform: toPx,
+    }),
+    styleDep(options.bar.hyprlandWorkspaces.workspaces.focused.radius, {
+      name: "bar-hyprland-workspaces-workspaces-focused-radius",
+      fallback: () => options.bar.hyprlandWorkspaces.workspaces.radius.get(),
+      transform: toPx,
+    }),
   ],
   /* Module - Separator */
   [
-    styleDep(
-      options.bar.separator.color,
-      "bar-separator-color",
-      fallbackOption(options.theme.fgColor)
-    ),
-    styleDep(options.bar.separator.width, "bar-separator-width"),
-    styleDep(
-      options.bar.separator.horizontalMargin,
-      "bar-separator-horizontal-margin"
-    ),
-    styleDep(
-      options.bar.separator.verticalMargin,
-      "bar-separator-vertical-margin"
-    ),
+    styleDep(options.bar.separator.color, {
+      name: "bar-separator-color",
+      fallback: () => options.theme.fgColor.get(),
+    }),
+    styleDep(options.bar.separator.width, {
+      name: "bar-separator-width",
+      transform: toPx,
+    }),
+    styleDep(options.bar.separator.horizontalMargin, {
+      name: "bar-separator-horizontal-margin",
+      transform: toPx,
+    }),
+    styleDep(options.bar.separator.verticalMargin, {
+      name: "bar-separator-vertical-margin",
+      transform: toPx,
+    }),
   ],
   /* Module - Tray */
-  [styleDep(options.bar.tray.spacing, "bar-tray-spacing")],
+  [
+    styleDep(options.bar.tray.spacing, {
+      name: "bar-tray-spacing",
+      transform: toPx,
+    }),
+  ],
 ].flat();
 
-export default [themeConfig, barConfig].flat();
+const osdConfig = [
+  styleDep(options.osd.position, {
+    name: "osd-position",
+  }),
+  styleDep(options.osd.barColor, {
+    name: "osd-bar-color",
+    fallback: () => options.theme.primaryColor.get(),
+  }),
+  styleDep(options.osd.margin, {
+    name: "osd-margin",
+    transform: toPx,
+  }),
+  styleDep(options.osd.axisLength, {
+    name: "osd-axis-length",
+    transform: toPx,
+  }),
+  styleDep(options.osd.crossAxisLength, {
+    name: "osd-cross-axis-length",
+    transform: toPx,
+  }),
+];
+
+export default [
+  themeConfig,
+  barConfig,
+  osdConfig,
+].flat() satisfies StyleDependency<OptionType>[];

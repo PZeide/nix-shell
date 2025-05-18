@@ -10,16 +10,6 @@ import { MediaModuleBuilder } from "./modules/Media";
 import { SeparatorModuleBuilder } from "./modules/Separator";
 import { TrayModuleBuilder } from "./modules/Tray";
 
-type BarModulesProps = {
-  monitor: Gdk.Monitor;
-  modules: State<string[]>;
-  type: string;
-};
-
-type BarProps = {
-  monitor: Gdk.Monitor;
-};
-
 type ModuleBuilder = (monitor: Gdk.Monitor) => JSX.Element;
 const moduleWidgets: Record<string, ModuleBuilder | undefined> = {
   battery: BatteryModuleBuilder,
@@ -32,6 +22,12 @@ const moduleWidgets: Record<string, ModuleBuilder | undefined> = {
   "power-menu": undefined,
   separator: SeparatorModuleBuilder,
   tray: TrayModuleBuilder,
+};
+
+type BarModulesProps = {
+  monitor: Gdk.Monitor;
+  modules: State<string[]>;
+  type: string;
 };
 
 function BarModules({ monitor, modules, type }: BarModulesProps) {
@@ -50,7 +46,11 @@ function BarModules({ monitor, modules, type }: BarModulesProps) {
   );
 }
 
-export default function Bar(props: BarProps) {
+type BarProps = {
+  monitor: Gdk.Monitor;
+};
+
+export default function Bar({ monitor }: BarProps) {
   const anchor = bind(options.bar.position).as(
     (position) =>
       (position === "top"
@@ -65,7 +65,7 @@ export default function Bar(props: BarProps) {
       name="Bar"
       visible={true}
       class="bar"
-      gdkmonitor={props.monitor}
+      gdkmonitor={monitor}
       layer={Astal.Layer.TOP}
       exclusivity={Astal.Exclusivity.EXCLUSIVE}
       anchor={anchor}
@@ -73,17 +73,17 @@ export default function Bar(props: BarProps) {
     >
       <centerbox hexpand class="bar-inner">
         <BarModules
-          monitor={props.monitor}
+          monitor={monitor}
           modules={options.bar.leftModules}
           type="start"
         />
         <BarModules
-          monitor={props.monitor}
+          monitor={monitor}
           modules={options.bar.centerModules}
           type="center"
         />
         <BarModules
-          monitor={props.monitor}
+          monitor={monitor}
           modules={options.bar.rightModules}
           type="end"
         />

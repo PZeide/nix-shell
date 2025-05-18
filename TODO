@@ -21,9 +21,11 @@ Todo:
     ☐ FEAT - App Launcher (PowerToys like)
       ☐ Hide entries by regex (waydroid)
     ☐ FEAT - HIDE Notifications if no notification
+    ☐ FEAT - Disable OSD of particular mode if changing manually from control center
 
   Bugs:
     ☐ BUG - If player is stopped, maybe show others playing players? @low
+    ☐ BUG - Transition playing when changing OSD types @low
 
   Updates:
 

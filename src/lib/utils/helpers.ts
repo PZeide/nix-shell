@@ -1,25 +1,31 @@
 import AstalHyprland from "gi://AstalHyprland?version=0.1";
-import type GLib from "gi://GLib?version=2.0";
+import type AstalIO from "gi://AstalIO?version=0.1";
 import type { CCProps, Gdk } from "ags/gtk4";
-import { execAsync } from "ags/process";
+import { exec, execAsync } from "ags/process";
 import { Binding } from "ags/state";
+import { timeout } from "ags/time";
 import type { SnakeCase } from "type-fest";
 
 export function debounce<T extends unknown[], U>(
   callback: (...args: T) => PromiseLike<U> | U,
   wait: number
 ) {
-  let source: GLib.Source;
+  let time: AstalIO.Time;
+
   return (...args: T): Promise<U> => {
-    clearTimeout(source);
+    time?.cancel();
     return new Promise((resolve) => {
-      source = setTimeout(() => resolve(callback(...args)), wait);
+      time = timeout(wait, () => resolve(callback(...args)));
     });
   };
 }
 
 export async function sh(cmd: string): Promise<string> {
   return await execAsync(["/bin/sh", "-c", cmd]);
+}
+
+export function shSync(cmd: string): string {
+  return exec(["/bin/sh", "-c", cmd]);
 }
 
 export function toHyprlandMonitor(

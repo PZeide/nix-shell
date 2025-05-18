@@ -4,17 +4,17 @@
 window.bar .bar-modules-container > .module-hyprland-workspaces {
   .workspace-button {
     transition: all 0.2s ease-out;
-    margin: 0 #{theme.$bar-hyprland-workspaces-workspaces-spacing}pt;
-    border-radius: #{theme.$bar-hyprland-workspaces-workspaces-radius}pt;
+    margin: 0 theme.$bar-hyprland-workspaces-workspaces-spacing;
+    border-radius: theme.$bar-hyprland-workspaces-workspaces-radius;
 
     &.inactive {
       background-color: color.scale(
         $color: theme.$bar-hyprland-workspaces-workspaces-inactive-color,
         $alpha: -70%
       );
-      min-width: #{theme.$bar-hyprland-workspaces-workspaces-inactive-width}pt;
-      min-height: #{theme.$bar-hyprland-workspaces-workspaces-inactive-height}pt;
-      border-radius: #{theme.$bar-hyprland-workspaces-workspaces-inactive-radius}pt;
+      min-width: theme.$bar-hyprland-workspaces-workspaces-inactive-width;
+      min-height: theme.$bar-hyprland-workspaces-workspaces-inactive-height;
+      border-radius: theme.$bar-hyprland-workspaces-workspaces-inactive-radius;
     }
 
     &.occupied {
@@ -22,16 +22,16 @@ window.bar .bar-modules-container > .module-hyprland-workspaces {
         $color: theme.$bar-hyprland-workspaces-workspaces-occupied-color,
         $alpha: -40%
       );
-      min-width: #{theme.$bar-hyprland-workspaces-workspaces-occupied-width}pt;
-      min-height: #{theme.$bar-hyprland-workspaces-workspaces-occupied-height}pt;
-      border-radius: #{theme.$bar-hyprland-workspaces-workspaces-occupied-radius}pt;
+      min-width: theme.$bar-hyprland-workspaces-workspaces-occupied-width;
+      min-height: theme.$bar-hyprland-workspaces-workspaces-occupied-height;
+      border-radius: theme.$bar-hyprland-workspaces-workspaces-occupied-radius;
     }
 
     &.focused {
       background-color: theme.$bar-hyprland-workspaces-workspaces-focused-color;
-      min-width: #{theme.$bar-hyprland-workspaces-workspaces-focused-width}pt;
-      min-height: #{theme.$bar-hyprland-workspaces-workspaces-focused-height}pt;
-      border-radius: #{theme.$bar-hyprland-workspaces-workspaces-focused-radius}pt;
+      min-width: theme.$bar-hyprland-workspaces-workspaces-focused-width;
+      min-height: theme.$bar-hyprland-workspaces-workspaces-focused-height;
+      border-radius: theme.$bar-hyprland-workspaces-workspaces-focused-radius;
     }
   }
 }

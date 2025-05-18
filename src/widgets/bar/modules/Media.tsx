@@ -1,10 +1,11 @@
+import type AstalIO from "gi://AstalIO?version=0.1";
 import AstalMpris from "gi://AstalMpris?version=0.1";
-import type GLib from "gi://GLib?version=2.0";
 import Pango from "gi://Pango?version=1.0";
 import options from "@/options";
 import Icon from "@/widgets/common/Icon";
 import { Gdk, Gtk, With } from "ags/gtk4";
 import { type Binding, State, bind, derive, hook } from "ags/state";
+import { timeout } from "ags/time";
 
 const mediaGenericIcon = "audio-x-generic-symbolic";
 
@@ -43,7 +44,12 @@ function MediaIcon({ entry }: MediaIconProps) {
   };
 
   return (
-    <Icon icon={bind(icon)} fallback={mediaGenericIcon} $destroy={cleanup} />
+    <Icon
+      icon={bind(icon)}
+      type={iconType}
+      fallback={mediaGenericIcon}
+      $destroy={cleanup}
+    />
   );
 }
 
@@ -56,7 +62,7 @@ function MediaRevealer({ player, direction }: MediaRevealerProps) {
   const revealChild = new State(false);
 
   let isHovering = false;
-  let timeoutSource: GLib.Source | undefined;
+  let time: AstalIO.Time | undefined;
 
   const awareRevealChild = derive(
     [bind(revealChild), bind(options.bar.media.enableRevealer)],
@@ -89,10 +95,8 @@ function MediaRevealer({ player, direction }: MediaRevealerProps) {
     isHovering = true;
     revealChild.set(true);
 
-    if (timeoutSource !== undefined) {
-      // Prevent any auto-close if hovering
-      clearTimeout(timeoutSource);
-    }
+    // Prevent any auto-close if hovering
+    time?.cancel();
   };
 
   const onHoverLeave = () => {
@@ -143,18 +147,16 @@ function MediaRevealer({ player, direction }: MediaRevealerProps) {
 
       revealChild.set(true);
 
-      if (timeoutSource !== undefined) {
-        // Clear any already active timeout
-        clearTimeout(timeoutSource);
-      }
+      // Clear any already active timeout
+      time?.cancel();
 
       if (!isHovering) {
         // Initiate auto-close only if not hovering
-        timeoutSource = setTimeout(() => {
+        time = timeout(options.bar.media.revealDuration.get(), () => {
           if (!self.in_destruction()) {
             revealChild.set(false);
           }
-        }, options.bar.media.revealDuration.get());
+        });
       }
     });
   };
@@ -183,10 +185,7 @@ function MediaRevealer({ player, direction }: MediaRevealerProps) {
     awareRevealChild.destroy();
     formattedLabel.destroy();
     shouldShow.destroy();
-
-    if (timeoutSource !== undefined) {
-      clearTimeout(timeoutSource);
-    }
+    time?.cancel();
   };
 
   return (

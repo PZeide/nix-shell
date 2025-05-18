@@ -35,8 +35,9 @@ function BatteryBar() {
         icon="camera-flash-symbolic"
         visible={bind(battery, "charging")}
         halign={Gtk.Align.CENTER}
-        size={20}
         class="level-bar-charging-icon"
+        lookupSize={20}
+        pixelSize={20}
       />
     );
 

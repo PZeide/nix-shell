@@ -6,7 +6,8 @@ window.bar .bar-modules-container > .module-separator {
     $color: theme.$bar-separator-color,
     $alpha: -60%
   );
-  min-width: #{theme.$bar-separator-width}pt;
-  margin: #{theme.$bar-separator-vertical-margin}pt
-    #{theme.$bar-separator-horizontal-margin}pt;
+
+  min-width: theme.$bar-separator-width;
+  margin: theme.$bar-separator-vertical-margin
+    theme.$bar-separator-horizontal-margin;
 }

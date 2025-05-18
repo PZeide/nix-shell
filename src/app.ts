@@ -8,6 +8,7 @@ import {
   BarCornerLeftBuilder,
   BarCornerRightBuilder,
 } from "./widgets/bar/BarCorner";
+import { OnScreenDisplayBuilder } from "./widgets/osd/OnScreenDisplay";
 
 async function startShell() {
   console.debug("Starting zeide-shell!");
@@ -15,7 +16,13 @@ async function startShell() {
   app.add_icons(`${SRC}/assets/icons`);
 
   await initStyle(`${SRC}/styles/main.scss`, styleDependencies);
-  syncWithMonitors([BarBuilder, BarCornerLeftBuilder, BarCornerRightBuilder]);
+
+  syncWithMonitors([
+    BarBuilder,
+    BarCornerLeftBuilder,
+    BarCornerRightBuilder,
+    OnScreenDisplayBuilder,
+  ]);
 }
 
 app.start({

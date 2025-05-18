@@ -10,7 +10,7 @@ export type IconLookupOptions = {
 
 export function lookupIcon(
   name: string,
-  options: Partial<IconLookupOptions>
+  options: Partial<IconLookupOptions> = {}
 ): Gtk.IconPaintable {
   const display = Gdk.Display.get_default();
   if (display === null) {

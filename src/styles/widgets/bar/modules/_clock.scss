@@ -1,5 +1,6 @@
 @use "@theme" as theme;
 
 window.bar .bar-modules-container > .module-clock {
-  font-size: #{theme.$bar-clock-font-size}pt;
+  font-size: theme.$bar-clock-font-size;
+  font-weight: 800;
 }

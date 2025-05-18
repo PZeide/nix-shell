@@ -48,6 +48,7 @@
 
         pathPackages = with pkgs; [
           dart-sass
+          brightnessctl
         ];
       in {
         packages = {

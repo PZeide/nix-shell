@@ -2,6 +2,6 @@
 
 window.bar .bar-modules-container > .module-tray {
   .tray-item {
-    margin: 0 #{theme.$bar-tray-spacing}pt;
+    margin: 0 theme.$bar-tray-spacing;
   }
 }

@@ -1,0 +1,41 @@
+@use "@theme" as theme;
+
+$inner-padding: 5px;
+$axis: null;
+$cross-axis: null;
+
+@if theme.$osd-position == top or theme.$osd-position == bottom {
+  $axis: width;
+  $cross-axis: height;
+} @else if theme.$osd-position == left or theme.$osd-position == right {
+  $axis: height;
+  $cross-axis: width;
+}
+
+window.osd {
+  background: transparent;
+  margin-#{theme.$osd-position}: theme.$osd-margin;
+
+  .osd-box {
+    padding: $inner-padding;
+    background-color: theme.$bg-color;
+    border-radius: theme.$corner-radius;
+
+    min-#{$axis}: calc(theme.$osd-axis-length + theme.$osd-cross-axis-length);
+    min-#{$cross-axis}: theme.$osd-cross-axis-length;
+
+    .osd-value-bar {
+      background-color: theme.$osd-bar-color;
+      transition: all 0.1s;
+
+      .osd-icon-container {
+        min-width: theme.$osd-cross-axis-length;
+        min-height: theme.$osd-cross-axis-length;
+
+        image {
+          color: theme.$bg-color;
+        }
+      }
+    }
+  }
+}

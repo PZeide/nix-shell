@@ -1,11 +1,11 @@
 window.bar .bar-modules-container > .module-media {
   .media-container {
     &.dir-left > image {
-      margin-left: 3.5pt;
+      margin-left: 4px;
     }
 
     &.dir-right > image {
-      margin-right: 3.5pt;
+      margin-right: 4px;
     }
   }
 }

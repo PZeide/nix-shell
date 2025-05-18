@@ -3,12 +3,22 @@ import { debounce } from "@/lib/utils/helpers";
 import app from "ags/gtk4/app";
 import { type StyleDependency, compileStyle } from "./builder";
 
+type StyleDependencyOptions<T extends OptionType> = {
+  name: string;
+  fallback?: () => T;
+  transform?: (value: OptionType) => OptionType;
+};
+
 export function styleDep<T extends OptionType>(
   option: Option<T>,
-  name: string,
-  fallback?: () => T
+  options: StyleDependencyOptions<T>
 ): StyleDependency<T> {
-  return { option, name, fallback };
+  return {
+    option,
+    name: options.name,
+    fallback: options.fallback,
+    transform: options.transform,
+  };
 }
 
 async function updateStyle(

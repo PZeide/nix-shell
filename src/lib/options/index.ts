@@ -1,11 +1,14 @@
 import Gio from "gi://Gio?version=2.0";
 import { monitorFile } from "ags/file";
 import type { ReadonlyDeep } from "type-fest";
-import type z from "zod";
+import { z } from "zod/v4-mini";
 import { Option, type OptionTree, type OptionType } from "./option";
 import { syncTreeFromFile } from "./sync";
 
-export function opt<T extends OptionType>(init: T, schema: z.ZodType<T>) {
+// Load zod locales before loading options
+z.config(z.locales.en());
+
+export function opt<T extends OptionType>(init: T, schema: z.ZodMiniType<T>) {
   return new Option(init, schema);
 }
 
