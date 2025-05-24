@@ -63,6 +63,7 @@ export default function Bar({ monitor }: BarProps) {
   return (
     <window
       name="Bar"
+      namespace="zs-bar"
       visible={true}
       class="bar"
       gdkmonitor={monitor}

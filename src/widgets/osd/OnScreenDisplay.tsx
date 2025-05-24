@@ -37,6 +37,7 @@ export default function OnScreenDisplay({ monitor }: OnScreenDisplayProps) {
   return (
     <window
       name="OnScreenDisplay"
+      namespace="zs-osd"
       visible={bind(visible)}
       class="osd"
       gdkmonitor={monitor}

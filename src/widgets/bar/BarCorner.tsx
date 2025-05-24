@@ -61,6 +61,7 @@ export default function BarCorner({ monitor, position }: BarCornerProps) {
   return (
     <window
       name={`BarCorner-${position}`}
+      namespace={`zs-bar-${position[0]}corner`}
       visible={bind(options.bar.isEnabled)}
       class="bar-corner"
       gdkmonitor={monitor}
