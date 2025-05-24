@@ -26,7 +26,7 @@ function WorkspaceButton({ workspace }: WorkspaceButtonProps) {
   };
 
   const workspaceClass = derive(
-    [bind(hyprland, "focusedWorkspace"), bind(hyprland, "clients")],
+    [bind(hyprland, "focusedWorkspace"), bind(workspace, "clients")],
     (focusedWorkspace) => {
       if (focusedWorkspace === workspace) {
         return "focused";
