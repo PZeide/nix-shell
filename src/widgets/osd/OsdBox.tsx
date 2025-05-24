@@ -45,10 +45,18 @@ export default function ({ icon, value }: OsdBoxProps) {
       <box
         class="osd-value-bar"
         css={bind(valueCss)}
-        orientation={Gtk.Orientation.HORIZONTAL}
-        hexpand={false}
+        halign={direction.as((direction) =>
+          direction === "horizontal" ? Gtk.Align.START : Gtk.Align.CENTER
+        )}
+        valign={direction.as((direction) =>
+          direction === "vertical" ? Gtk.Align.END : Gtk.Align.CENTER
+        )}
       >
-        <box class="osd-icon-container" halign={Gtk.Align.END} hexpand>
+        <box
+          class="osd-icon-container"
+          halign={Gtk.Align.END}
+          valign={Gtk.Align.START}
+        >
           <Icon
             icon={icon}
             type="symbolic"

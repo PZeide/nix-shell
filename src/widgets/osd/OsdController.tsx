@@ -2,7 +2,7 @@ import type AstalIO from "gi://AstalIO?version=0.1";
 import AstalWp from "gi://AstalWp?version=0.1";
 import Brightness from "@/lib/services/brightness";
 import options from "@/options";
-import { type Gtk, With } from "ags/gtk4";
+import type { Gtk } from "ags/gtk4";
 import { State, bind, hook } from "ags/state";
 import { timeout } from "ags/time";
 import OsdBox from "./OsdBox";
